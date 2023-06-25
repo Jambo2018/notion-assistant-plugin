@@ -1,5 +1,5 @@
 {
-	"name": "notion-assistant-plugin",
+	"name": "notion-assistant",
 	"version": "0.1.0",
 	"description": "Notion Assistant is a plugin that improves input efficiency and provides a user experience similar to that of【Notion】",
 	"main": "main.js",
@@ -10,7 +10,7 @@
 	},
 	"keywords": [],
 	"author": "Jambo",
-	"repository":"",
+	"repository":"https://github.com/Jambo2018/notion-assistant-plugin",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
