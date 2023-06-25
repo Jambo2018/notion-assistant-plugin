@@ -1,7 +1,7 @@
 {
 	"id": "notion-assistant-plugin",
 	"name": "Notion Assistant",
-	"version": "0.1.1",
+	"version": "0.1.0",
 	"minAppVersion": "0.15.0",
 	"description": "Notion Assistant is a plugin that improves input efficiency and provides a user experience similar to that of【Notion】",
 	"author": "Jambo",
