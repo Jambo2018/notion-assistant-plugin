@@ -1,137 +1,273 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
-
-// Remember to rename these classes and interfaces!
-
-interface MyPluginSettings {
-	mySetting: string;
-}
-
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
+import { Editor, MarkdownView, Plugin } from "obsidian";
+import { CommandMenu } from "src/command-menu";
+import { CMD_MAP, CODE_LAN, CONTENT_MAP, TEXT_MAP } from "src/constants";
+import { generateBookMark } from "src/link-bookmark";
+import { InsertLinkModal } from "src/link-input-modal";
+import { SelectionBtns } from "src/selection-menu";
+import { linkParse } from "src/util";
 
 export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
-
+	commands: CommandMenu;
+	btns: SelectionBtns;
+	linkModal: InsertLinkModal;
 	async onload() {
-		await this.loadSettings();
+		console.log("==============>load");
+		const onSelectionAction = async (
+			content: string,
+			isHeading: boolean
+		) => {
+			if (isHeading) {
+				const view =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (!view?.editor) return;
+				const editor = view.editor;
+				const cursor = editor.getCursor();
+				const lineContent = editor.getLine(cursor.line);
+				editor.setLine(cursor.line, lineContent.replace(/^.*?\s/, ""));
+			}
+			this.app.commands.executeCommandById(content);
+			this.btns.hide();
+		};
 
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
-		// Perform additional things with the ribbon
-		ribbonIconEl.addClass('my-plugin-ribbon-class');
+		const formatUnderline = (
+			editor: Editor,
+			line: number,
+			left: number,
+			right: number
+		) => {
+			// range of selected content
+			const selectedRange = [
+				{ line, ch: left },
+				{ line, ch: right },
+			] as const;
+			let selection = editor.getRange(...selectedRange);
+			if (/((?!u>).*?)((<u>(?!u>).*<\/u>)+)((?!u>).*?)/.test(selection)) {
+				selection = selection.replace(/<\/?u>/g, "");
+			}
+			editor.replaceRange(`<u>${selection}</u>`, ...selectedRange);
+			const content = editor.getLine(line);
+			const arr = content.split(/<\/?u>/g);
+			let joinContent = "";
+			arr.forEach((item, index) => {
+				if (index % 2 === 0) {
+					joinContent += item ?? "";
+					if (index < arr.length - 1) {
+						joinContent += "<u>";
+					}
+				} else {
+					joinContent += (item ?? "") + "</u>";
+				}
+			});
+			joinContent = joinContent.replace(/(<\/u><u>)|(<u><\/u>)/g, "");
+			editor.setLine(line, joinContent);
+		};
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
+		const onMenuClick = async (content: string) => {
+			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+			if (view) {
+				const cursor = view.editor.getCursor();
+				const editLine = view.editor.getLine(cursor.line);
+
+				if (content === "bookmark") {
+					view.editor.blur();
+					this.linkModal.open();
+				} else if (content === "code") {
+					this.app.commands.executeCommandById(CMD_MAP["code"]);
+				} else {
+					if (editLine.length > 1) {
+						view.editor.replaceRange(
+							`\n${content}`,
+							{ line: cursor.line, ch: cursor.ch - 1 },
+							cursor
+						);
+						view.editor.setCursor({
+							line: cursor.line + 1,
+							ch: content.length,
+						});
+					} else {
+						view.editor.setLine(cursor.line, content);
+						view.editor.setCursor({
+							line: cursor.line,
+							ch: content.length,
+						});
+					}
+					view.editor.focus();
+				}
+			}
+		};
+
+		const onLinkSubmit = async (url: string) => {
+			const parsedResult = await linkParse(url);
+			let codeStr = "```" + CODE_LAN + "\n";
+			for (const key in parsedResult) {
+				codeStr += key + ":" + parsedResult[key] + "\n";
+			}
+			codeStr += "```\n";
+			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+			if (view) {
+				const cursor = view.editor.getCursor();
+				const editLine = view.editor.getLine(cursor.line);
+				if (editLine.length > 0) {
+					view.editor.replaceRange(
+						`\n${codeStr}`,
+						{ line: cursor.line, ch: cursor.ch - 1 },
+						cursor
+					);
+					view.editor.setCursor({
+						line: cursor.line + 1,
+						ch: codeStr.length,
+					});
+				} else {
+					view.editor.setLine(cursor.line, codeStr);
+					view.editor.setCursor({
+						line: cursor.line,
+						ch: codeStr.length,
+					});
+				}
+			}
+		};
+
+		const handleSelection = () => {
+			const selection = document.getSelection()?.toString();
+			if (selection) {
+				const view =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (!view?.editor) return;
+				const editor = view.editor;
+				const cursor = editor.getCursor();
+				const lineContent = editor.getLine(cursor.line);
+
+				let lineStyle = "Text";
+				for (const cmd in CONTENT_MAP) {
+					if (cmd === "text") {
+						continue;
+					} else if (lineContent.startsWith(CONTENT_MAP[cmd])) {
+						lineStyle = TEXT_MAP[cmd];
+						break;
+					} else if (/^[\d]+\.\s/.test(lineContent)) {
+						lineStyle = TEXT_MAP["numberList"];
+						break;
+					}
+				}
+				this.btns.display(lineStyle);
+			}
+		};
+
+		this.linkModal = new InsertLinkModal(this.app, onLinkSubmit);
 
 		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
-			id: 'open-sample-modal-simple',
-			name: 'Open sample modal (simple)',
+			id: "underline",
+			name: "下划线/取消下划线",
 			callback: () => {
-				new SampleModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'sample-editor-command',
-			name: 'Sample editor command',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection('Sample Editor Command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-sample-modal-complex',
-			name: 'Open sample modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new SampleModal(this.app).open();
+				const view =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (!view?.editor) return;
+				const editor = view.editor;
+				const from = editor.getCursor("from");
+				const to = editor.getCursor("to");
+				for (let i = from.line; i <= to.line; i++) {
+					const len = editor.getLine(i).length;
+					if (from.line === to.line) {
+						formatUnderline(editor, i, from.ch, to.ch);
+					} else if (i === from.line && i < to.line) {
+						formatUnderline(editor, i, from.ch, len);
+					} else if (i > from.line && i < to.line) {
+						formatUnderline(editor, i, 0, len);
+					} else if (i > from.line && i === to.line) {
+						formatUnderline(editor, i, 0, to.ch);
 					}
+				}
+			},
+		});
 
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
+		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
+			if (this.commands.isVisible()) {
+				this.commands.hide();
+			}
+			const selection = document.getSelection()?.toString();
+			if (!selection && this.btns.isVisible()) {
+				this.btns.hide();
+			}
+		});
+
+		this.registerDomEvent(document, "mouseup", (evt: MouseEvent) => {
+			handleSelection();
+		});
+
+		this.registerDomEvent(document, "keydown", (evt: KeyboardEvent) => {
+			if (this.commands.isVisible()) {
+				const { key } = evt;
+				if (
+					key !== "ArrowUp" &&
+					key !== "ArrowDown" &&
+					key !== "ArrowLeft" &&
+					key !== "ArrowRight"
+				) {
+					this.commands.hide();
+					const view =
+						this.app.workspace.getActiveViewOfType(MarkdownView);
+					if (view) {
+						view.editor.focus();
+					}
+				}
+			}
+			if (this.btns.isVisible()) {
+				this.btns.hide();
+			}
+		});
+
+		this.app.workspace.on("active-leaf-change", () => {
+			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+			console.log("==========>active-leaf-change");
+			if (!view) return;
+			const scrollArea = view.containerEl.querySelector(".cm-scroller");
+			const appHeader = document.querySelector(".titlebar");
+			const viewHeader = view.containerEl.querySelector(".view-header");
+			const headerHeight =
+				(appHeader?.clientHeight ?? 0) +
+				(viewHeader?.clientHeight ?? 0);
+
+			if (!scrollArea) return;
+			this.commands = new CommandMenu({
+				scrollArea,
+				onMenu: onMenuClick,
+			});
+			this.btns = new SelectionBtns({
+				scrollArea,
+				headerHeight,
+				onAction: onSelectionAction,
+			});
+			scrollArea?.addEventListener("scroll", () => {
+				if (this.btns.isVisible()) {
+					handleSelection();
+				}
+			});
+		});
+
+		this.registerDomEvent(document, "input", (evt: InputEvent) => {
+			if (this.linkModal.isOpen) return;
+			if (evt && evt.data === "/") {
+				const view =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (!view) return;
+				const cursor = view.editor.getCursor();
+				const editLine = view.editor.getLine(cursor.line);
+				if (editLine.replace(/[\s]*$/, "").length <= cursor.ch) {
+					this.commands.display();
+				} else {
+					if (this.commands.isVisible()) {
+						this.commands.hide();
+					}
 				}
 			}
 		});
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
+		this.registerMarkdownCodeBlockProcessor(CODE_LAN, (source, el, ctx) => {
+			const bookmark = generateBookMark(source);
+			el?.appendChild(bookmark);
 		});
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
-	onunload() {
-
-	}
-
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const {containerEl} = this;
-
-		containerEl.empty();
-
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
-
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
-	}
+	onunload() {}
 }
