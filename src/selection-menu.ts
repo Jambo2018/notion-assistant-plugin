@@ -33,14 +33,14 @@ export class SelectionBtns {
 			const btn = createDiv();
 			btn.setAttribute("class", "selection-btn");
 			btn.setAttribute("commandType", `${idx}`);
-			btn.innerHTML = idx === 0 ? TEXT_MAP["text"] : ICON_MAP[item];
+			btn.innerHTML = idx === 0 ? TEXT_MAP["text"] : (ICON_MAP as any)[item];
 			btn.onclick = function (e) {
 				if (idx === 0) {
 					e.preventDefault();
 					e.stopPropagation();
 					_this.showHeading();
 				} else {
-					props.onAction(CMD_MAP[item], false);
+					props.onAction((CMD_MAP as any)[item], false);
 				}
 			};
 			menu_content.appendChild(btn);

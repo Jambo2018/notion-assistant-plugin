@@ -53,7 +53,7 @@ export class CommandMenu {
 				if (key === "Enter") {
 					e?.preventDefault();
 					e?.stopPropagation();
-					props.onMenu(CONTENT_MAP[cmd]);
+					props.onMenu((CONTENT_MAP as any)[cmd]);
 					_this.hide();
 				}
 				let nextFocusEle: HTMLElement = focusEle as HTMLElement;

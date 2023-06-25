@@ -25,7 +25,7 @@ export default class MyPlugin extends Plugin {
 				const lineContent = editor.getLine(cursor.line);
 				editor.setLine(cursor.line, lineContent.replace(/^.*?\s/, ""));
 			}
-			this.app.commands.executeCommandById(content);
+			(this.app as any).commands.executeCommandById(content);
 			this.btns.hide();
 		};
 
@@ -72,7 +72,7 @@ export default class MyPlugin extends Plugin {
 					view.editor.blur();
 					this.linkModal.open();
 				} else if (content === "code") {
-					this.app.commands.executeCommandById(CMD_MAP["code"]);
+					(this.app as any).commands.executeCommandById(CMD_MAP["code"]);
 				} else {
 					if (editLine.length > 1) {
 						view.editor.replaceRange(
@@ -100,7 +100,7 @@ export default class MyPlugin extends Plugin {
 			const parsedResult = await linkParse(url);
 			let codeStr = "```" + CODE_LAN + "\n";
 			for (const key in parsedResult) {
-				codeStr += key + ":" + parsedResult[key] + "\n";
+				codeStr += key + ":" + (parsedResult as any)[key] + "\n";
 			}
 			codeStr += "```\n";
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
@@ -141,8 +141,8 @@ export default class MyPlugin extends Plugin {
 				for (const cmd in CONTENT_MAP) {
 					if (cmd === "text") {
 						continue;
-					} else if (lineContent.startsWith(CONTENT_MAP[cmd])) {
-						lineStyle = TEXT_MAP[cmd];
+					} else if (lineContent.startsWith((CONTENT_MAP as any)[cmd])) {
+						lineStyle = (TEXT_MAP as any)[cmd];
 						break;
 					} else if (/^[\d]+\.\s/.test(lineContent)) {
 						lineStyle = TEXT_MAP["numberList"];
