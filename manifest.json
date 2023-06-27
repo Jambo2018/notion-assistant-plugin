@@ -1,9 +1,9 @@
 {
 	"id": "notion-assistant",
-	"name": "Notion Assistant",
+	"name": "Typing Assistant",
 	"version": "0.1.1",
 	"minAppVersion": "0.15.0",
-	"description": "Notion Assistant is a plugin that improves input efficiency and provides a user experience similar to that of【Notion】",
+	"description": "Support multiple shortcut menus to improve input efficiency",
 	"author": "Jambo",
 	"authorUrl": "https://github.com/Jambo2018",
 	"isDesktopOnly": false

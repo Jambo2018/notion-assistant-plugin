@@ -11,7 +11,6 @@ export default class MyPlugin extends Plugin {
 	btns: SelectionBtns;
 	linkModal: InsertLinkModal;
 	async onload() {
-		console.log("==============>load");
 		const onSelectionAction = async (
 			content: string,
 			isHeading: boolean
@@ -158,12 +157,8 @@ export default class MyPlugin extends Plugin {
 		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
 			id: "underline",
-			name: "下划线/取消下划线",
-			callback: () => {
-				const view =
-					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (!view?.editor) return;
-				const editor = view.editor;
+			name: "Underline/Cancel underline",
+			editorCallback: (editor: Editor) => {
 				const from = editor.getCursor("from");
 				const to = editor.getCursor("to");
 				for (let i = from.line; i <= to.line; i++) {
@@ -219,7 +214,6 @@ export default class MyPlugin extends Plugin {
 
 		this.app.workspace.on("active-leaf-change", () => {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-			console.log("==========>active-leaf-change");
 			if (!view) return;
 			const scrollArea = view.containerEl.querySelector(".cm-scroller");
 			const appHeader = document.querySelector(".titlebar");
@@ -269,5 +263,5 @@ export default class MyPlugin extends Plugin {
 		});
 	}
 
-	onunload() {}
+	onunload() { }
 }
