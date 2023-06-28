@@ -1,3 +1,4 @@
+import { addIcon } from "obsidian";
 import { CONTENT_MAP, HEADING_MENU, ICON_MAP, MENU_HEIGHT, MENU_MARGIN, MENU_WIDTH, TEXT_MAP } from "./constants";
 
 /**
@@ -16,12 +17,15 @@ export class CommandMenu {
 		this.scrollArea = props.scrollArea as HTMLDivElement;
 		this.menu.setAttribute("id", "command-menu");
 		this.menu.setAttribute("class", "command");
+		addIcon('icon-text',ICON_MAP['text'])
 		HEADING_MENU.forEach((item, idx) => {
 			const btn = createDiv();
-			btn.setAttribute("class", "command-option");
+			btn.addClass("command-option")
 			btn.setAttribute("tabindex", "-1");
 			btn.setAttribute("commandType", `${item}`);
-			btn.innerHTML = `<div>${ICON_MAP[item]}</div>${TEXT_MAP[item]}`;
+			btn.createSvg('svg',"icon-text")
+			btn.createSpan({ text: TEXT_MAP[item] })
+			// btn.innerHTML = `<div>${ICON_MAP[item]}</div>${TEXT_MAP[item]}`;
 			btn.onclick = function () {
 				props.onMenu(CONTENT_MAP[item]);
 			};
