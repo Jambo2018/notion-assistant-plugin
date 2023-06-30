@@ -3,7 +3,7 @@
 	--box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px,
 		rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px;
 	--bookmark-border: rgba(55, 53, 47, 0.16);
-	--bookmark-title: #37352F;
+	--bookmark-title: #37352f;
 	--bookmark-subtitle: rgb(55, 53, 47);
 }
 .theme-dark {
@@ -50,10 +50,25 @@
 	border-radius: 3px;
 	box-shadow: var(--shadow-s);
 }
-.command-option svg {
+/* .command-option svg {
+	position: relative;
 	width: 18px;
 	height: 18px;
 }
+.command-option svg::before {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	/* display: flex;
+	align-items: center;
+	margin-right: 12px;
+	padding: 8px; */
+	background-color: #f6f6f6;
+	border-radius: 3px;
+	box-shadow: var(--shadow-s);
+} */
 
 .bookmark {
 	display: flex;

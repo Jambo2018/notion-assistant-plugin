@@ -1,4 +1,4 @@
-import { request } from "obsidian";
+import { addIcon, request } from "obsidian";
 
 export interface LinkResult {
 	url: string;
@@ -70,35 +70,8 @@ export const debounce = (fn: Function, delay: number) => {
 	};
 };
 
-export function htmlToJson(html:string) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
-  const body = doc.body;
-  const json = {
-    tag: body.tagName.toLowerCase(),
-    attrs: {},
-    children: []
-  };
-  console.log('json',json)
-  const attrs = body.attributes;
-  for (let i = 0; i < attrs.length; i++) {
-    const attr = attrs[i];
-    json.attrs[attr.name] = attr.value;
-  }
-  const children = body.childNodes;
-  console.log('children',children.length)
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    if (child.nodeType === Node.ELEMENT_NODE) {
-    //   json.children.push(htmlToJson(child.outerHTML));
-    } else if (child.nodeType === Node.TEXT_NODE) {
-      json.children.push(child.textContent);
-    }
-  }
-  return json;
+export const initialIcons = (icons: Record<string, string>): void => {
+	for (const key in icons) {
+		addIcon(key, icons[key])
+	}
 }
-
-
-// export const parseSvgToJson=(svg:string)=>{
-// 	const /
-// }
