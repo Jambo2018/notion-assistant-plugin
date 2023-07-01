@@ -62,7 +62,7 @@ export const CMD_MAP = {
 	bold: "editor:toggle-bold",
 	strikethrough: "editor:toggle-strikethrough",
 	italics: "editor:toggle-italics",
-	underline: "notion-assistant:underline",
+	underline: "typing-assistant:underline",
 	code: "editor:toggle-code",
 };
 

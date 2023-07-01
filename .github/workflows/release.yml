@@ -6,7 +6,7 @@ on:
       - "*"
 
 env:
-  PLUGIN_NAME: notion-assistant
+  PLUGIN_NAME: typing-assistant
 
 jobs:
   build:
