@@ -12,27 +12,26 @@ export const generateBookMark = (content: string): HTMLDivElement => {
 	linkDiv.onclick = () => {
 		window.open(obj.url);
 	};
-	linkDiv.innerHTML = `
-	<div class="bookmark-content">
-	    ${obj.title ? `<div class="bookmark-title">${obj.title}</div>` : ""}
-		${
-			obj.description
-				? `<div class="bookmark-description">${obj.description}</div>`
-				: ""
-		}
-		<div class="bookmark-url">
-			${
-				obj.logo
-					? `<div class="bookmark-url-logo" style="background-image: url('${obj.logo}')" ></div>`
-					: ""
-			} 
-			<div class="bookmark-url-text">${obj.url}</div>
-		</div>
-	</div>
-	${
-		obj.coverImg
-			? `<div class="bookmark-cover" style="background-image: url('${obj.coverImg}')" ></div>`
-			: ""
-	} `;
+	const contentDiv = createDiv({ parent: linkDiv, cls: "bookmark-content" });
+	if (obj.title) {
+		contentDiv.createDiv({ cls: "bookmark-title", text: obj.title });
+	}
+	if (obj.description) {
+		contentDiv.createDiv({
+			cls: "bookmark-description",
+			text: obj.description,
+		});
+	}
+	const urlDiv = contentDiv.createDiv({  cls: "bookmark-url" });
+	if (obj.logo) {
+		urlDiv.createDiv({
+			cls: "bookmark-url-logo",
+			attr: { style: `background-image: url('${obj.logo}')` },
+		});
+	}
+	urlDiv.createSpan({ cls: "bookmark-url-text", text: obj.url });
+	if(obj.coverImg){
+		linkDiv.createDiv({cls:"bookmark-cover",attr:{style:`background-image: url('${obj.coverImg}')`}})
+	}
 	return linkDiv;
 };

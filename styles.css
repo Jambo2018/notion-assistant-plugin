@@ -50,32 +50,16 @@
 	border-radius: 3px;
 	box-shadow: var(--shadow-s);
 }
-/* .command-option svg {
-	position: relative;
+.command-option svg {
 	width: 18px;
 	height: 18px;
 }
-.command-option svg::before {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	/* display: flex;
-	align-items: center;
-	margin-right: 12px;
-	padding: 8px; */
-	background-color: #f6f6f6;
-	border-radius: 3px;
-	box-shadow: var(--shadow-s);
-} */
 
 .bookmark {
 	display: flex;
 	box-sizing: border-box;
 	width: 100%;
 	overflow: hidden;
-	/* background-color: var(--bookmark-background); */
 	border: 1px solid var(--bookmark-border);
 	border-radius: 3px;
 	cursor: pointer;
@@ -122,7 +106,6 @@
 	overflow: hidden;
 	color: var(--bookmark-title);
 	font-size: 12px;
-	line-height: 16px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
@@ -159,8 +142,6 @@
 	justify-content: center;
 	height: 100%;
 	padding: 0 6px;
-	line-height: 32px;
-	text-align: center;
 	cursor: pointer;
 }
 
@@ -196,7 +177,6 @@
 
 .linemenu {
 	position: absolute;
-	/* top: 36px; */
 	left: 0;
 	overflow: hidden;
 	background-color: var(--color-base-20);
@@ -242,4 +222,13 @@
 
 .link-input input {
 	width: 100%;
+}
+
+.scroll-disable {
+	overflow: hidden;
+	margin-right: 12px;
+}
+
+.display-none{
+	display: none;
 }

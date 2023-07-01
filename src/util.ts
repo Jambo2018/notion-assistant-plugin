@@ -70,7 +70,7 @@ export const debounce = (fn: Function, delay: number) => {
 	};
 };
 
-export const initialIcons = (icons: Record<string, string>): void => {
+export const loadIcons = (icons: Record<string, string>): void => {
 	for (const key in icons) {
 		addIcon(key, icons[key])
 	}

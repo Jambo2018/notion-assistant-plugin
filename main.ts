@@ -4,7 +4,7 @@ import { CMD_MAP, CODE_LAN, CONTENT_MAP, ICON_MAP, TEXT_MAP } from "src/constant
 import { generateBookMark } from "src/link-bookmark";
 import { InsertLinkModal } from "src/link-input-modal";
 import { SelectionBtns } from "src/selection-menu";
-import { linkParse, htmlToJson, initialIcons } from "src/util";
+import { linkParse, loadIcons } from "src/util";
 
 export default class MyPlugin extends Plugin {
 	commands: CommandMenu;
@@ -13,7 +13,7 @@ export default class MyPlugin extends Plugin {
 	async onload() {
 		
 		// import svg to Obsidian-Icon 
-		initialIcons(ICON_MAP)
+		loadIcons(ICON_MAP)
 
 		const onSelectionAction = async (
 			content: string,

@@ -1,7 +1,7 @@
+import { setIcon } from "obsidian";
 import {
 	CMD_MAP,
 	HEADING_CMDS,
-	ICON_MAP,
 	MENU_MARGIN,
 	MENU_WIDTH,
 	SELECTION_CMDS,
@@ -21,19 +21,21 @@ export class SelectionBtns {
 		headerHeight: number;
 		onAction: (content: string, isHeading: boolean) => void;
 	}) {
-		this.menu = createDiv();
+		this.menu = createDiv({ cls: "selection", attr: { id: "selection" } });
 		this.scrollArea = props.scrollArea as HTMLDivElement;
 		this.headerHeight = props.headerHeight;
-		this.menu.setAttribute("id", "selection");
-		this.menu.setAttribute("class", "selection");
 		const _this = this;
-		const menu_content = createDiv();
-		menu_content.setAttribute("class", "selection-content");
+		const menu_content = createDiv({ cls: "selection-content" });
 		SELECTION_CMDS.forEach((item, idx) => {
-			const btn = createDiv();
-			btn.setAttribute("class", "selection-btn");
-			btn.setAttribute("commandType", `${idx}`);
-			btn.innerHTML = idx === 0 ? TEXT_MAP["text"] : (ICON_MAP as any)[item];
+			const btn = createDiv({
+				cls: "selection-btn",
+				attr: { commandType: idx },
+			});
+			if (idx === 0) {
+				btn.createSpan(TEXT_MAP["text"]);
+			} else {
+				setIcon(btn, item);
+			}
 			btn.onclick = function (e) {
 				if (idx === 0) {
 					e.preventDefault();
@@ -47,16 +49,21 @@ export class SelectionBtns {
 		});
 
 		this.menu.appendChild(menu_content);
-		this.lineMenu = createDiv();
-		this.lineMenu.setAttribute("class", "linemenu");
+		this.lineMenu = createDiv({ cls: "linemenu" });
 		this.hideHeading();
 		HEADING_CMDS.forEach((item, idx) => {
-			const btn = createDiv();
-			btn.setAttribute("class", "linemenu-option");
-			btn.setAttribute("commandType", `${idx}`);
-			btn.innerHTML = `<div>${ICON_MAP[item]}</div>${TEXT_MAP[item]}`;
+			const btn = createDiv({
+				cls: "linemenu-option",
+				attr: { commandType: idx },
+			});
+			const IconDiv = createDiv({
+				parent: btn,
+				cls: "linemenu-option-svg",
+			});
+			setIcon(IconDiv, item);
+			btn.createSpan({ text: TEXT_MAP[item] });
 			btn.onclick = function () {
-				props.onAction(CMD_MAP[item], true);
+				props.onAction((CMD_MAP as any)[item], true);
 			};
 			this.lineMenu.appendChild(btn);
 		});
@@ -64,7 +71,7 @@ export class SelectionBtns {
 		this.menu.appendChild(this.lineMenu);
 		document.body.appendChild(this.menu);
 	}
-	display = function (lineStyle: string) {
+	display = function (lineStyleText: string) {
 		const range = window?.getSelection()?.getRangeAt(0);
 		const rect = range?.getBoundingClientRect();
 		if (!rect) return;
@@ -74,17 +81,17 @@ export class SelectionBtns {
 		if (rightDis > 0) {
 			left -= rightDis;
 		}
-		this.menu.firstElementChild.firstElementChild.innerHTML = lineStyle;
+		this.menu.firstElementChild.firstElementChild.textContent =
+			lineStyleText;
 		if (top < this.headerHeight + 16) {
 			top = -999;
 		}
-		this.menu.style.top = `${top}px`;
-		this.menu.style.left = `${left}px`;
-		this.menu.style.display = "";
+		this.menu.style = `top:${top}px;left:${left}px`;
+		this.menu.removeClass("display-none");
 		this.menu.children[0].focus();
 	};
 	hide = function () {
-		this.menu.style.display = "none";
+		this.menu.addClass("display-none");
 		this.hideHeading();
 	};
 	showHeading = function () {
@@ -97,11 +104,8 @@ export class SelectionBtns {
 			this.scrollArea.clientHeight -
 			contentRect.top +
 			MENU_MARGIN;
-		if (topOffset <= 0) {
-			this.lineMenu.style = `top:36px`;
-		} else {
-			this.lineMenu.style = `top:${36 - topOffset}px`;
-		}
+		const containerTopBorder = topOffset <= 0 ? 36 : 36 - topOffset;
+		this.lineMenu.style = `top:${containerTopBorder}px`;
 	};
 	hideHeading = function () {
 		this.lineMenu.style = "display:none";

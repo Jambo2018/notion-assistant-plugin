@@ -1,5 +1,12 @@
 import { addIcon, setIcon } from "obsidian";
-import { CONTENT_MAP, HEADING_MENU, ICON_MAP, MENU_HEIGHT, MENU_MARGIN, MENU_WIDTH, TEXT_MAP } from "./constants";
+import {
+	CONTENT_MAP,
+	HEADING_MENU,
+	MENU_HEIGHT,
+	MENU_MARGIN,
+	MENU_WIDTH,
+	TEXT_MAP,
+} from "./constants";
 
 /**
  * show the menu while input a '/' in an empty line or the end of a line that not empty
@@ -12,20 +19,18 @@ export class CommandMenu {
 		scrollArea?: Element;
 		onMenu: (content: string) => void;
 	}) {
-		this.menu = createDiv();
+		this.menu = createDiv({ cls: "command", attr: { id: "command-menu" } });
 		this.mouseMoved = false;
 		this.scrollArea = props.scrollArea as HTMLDivElement;
-		this.menu.setAttribute("id", "command-menu");
-		this.menu.setAttribute("class", "command");
-		addIcon('icon-text', ICON_MAP['text'])
 		HEADING_MENU.forEach((item, idx) => {
-			const btn = createDiv();
-			btn.addClass("command-option")
-			btn.setAttribute("tabindex", "-1");
-			btn.setAttribute("commandType", `${item}`);
-			setIcon(btn, item)
-			// btn.createSpan({ text: TEXT_MAP[item] })
-			// btn.innerHTML = `<div>${ICON_MAP[item]}</div>${TEXT_MAP[item]}`;
+			const btn = createDiv({
+				parent: this.menu,
+				cls: "command-option",
+				attr: { tabindex: -1, commandType: item },
+			});
+			const IconDiv = createDiv({ parent: btn });
+			setIcon(IconDiv, item);
+			btn.createSpan({ text: TEXT_MAP[item] });
 			btn.onclick = function () {
 				props.onMenu(CONTENT_MAP[item]);
 			};
@@ -35,7 +40,6 @@ export class CommandMenu {
 				}
 				_this.mouseMoved = false;
 			};
-			this.menu.appendChild(btn);
 		});
 
 		const _this = this;
@@ -90,26 +94,32 @@ export class CommandMenu {
 		if (!rect) return;
 		let { height, top, left } = rect;
 		top += height;
-		const rightDis = left + MENU_WIDTH - this.scrollArea.clientWidth
+		const rightDis = left + MENU_WIDTH - this.scrollArea.clientWidth;
 		if (rightDis > 0) {
 			left -= rightDis;
 		}
-		const upDis = top + MENU_HEIGHT - this.scrollArea.clientHeight - scrollAreaRect.top + MENU_MARGIN;
+		const upDis =
+			top +
+			MENU_HEIGHT -
+			this.scrollArea.clientHeight -
+			scrollAreaRect.top +
+			MENU_MARGIN;
 		if (upDis > 0) {
 			this.scrollArea.scrollTo(0, this.scrollArea.scrollTop + upDis);
 			top -= upDis;
 		}
-		this.menu.style.top = `${top}px`;
-		this.menu.style.left = `${left}px`;
-		this.menu.style.display = 'block'
+		this.menu.style = `top:${top}px;left:${left}px`;
+		if (!this.isVisible()) {
+			this.menu.removeClass("display-none");
+		}
 		this.menu.children[0].focus();
-		this.scrollArea?.setAttribute("style", "overflow:hidden;margin-right:12px");
+		this.scrollArea?.addClass("scroll-disable");
 	};
 	hide = function () {
-		this.menu.style.display = 'none'
-		this.scrollArea?.setAttribute("style", "");
+		this.menu.addClass("display-none");
+		this.scrollArea?.removeClass("scroll-disable");
 	};
 	isVisible = function () {
-		return this.menu.style.display !== "none"
+		return !this.menu.hasClass("display-none");
 	};
 }
