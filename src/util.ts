@@ -59,16 +59,16 @@ export const linkParse = async (link: string): Promise<LinkResult> => {
 	}
 };
 
-export const debounce = (fn: Function, delay: number) => {
-	let handle: NodeJS.Timeout | null = null;
-	return function () {
-		if (handle) clearTimeout(handle);
-		handle = setTimeout(() => {
-			fn();
-			handle = null;
-		}, delay);
-	};
-};
+// export const debounce = (fn: Function, delay: number) => {
+// 	let handle: NodeJS.Timeout | null = null;
+// 	return function () {
+// 		if (handle) clearTimeout(handle);
+// 		handle = setTimeout(() => {
+// 			fn();
+// 			handle = null;
+// 		}, delay);
+// 	};
+// };
 
 export const loadIcons = (icons: Record<string, string>): void => {
 	for (const key in icons) {

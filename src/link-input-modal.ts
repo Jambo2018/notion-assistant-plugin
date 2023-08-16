@@ -19,7 +19,7 @@ export class InsertLinkModal extends Modal {
 		this.isOpen = true;
 		const { contentEl } = this;
 		this.linkUrl = "";
-		contentEl.createEl("h1", { text: "Insert A Link Bookmark" });
+		contentEl.createEl("h1", { text: "Insert a link bookmark" });
 
 		new Setting(contentEl)
 			.setName("Link URL")
@@ -57,7 +57,7 @@ export class InsertLinkModal extends Modal {
 			this.close();
 			this.onSubmit(url);
 		} else {
-			new Notice("please input a valid url");
+			new Notice("Please input a valid url");
 		}
 	}, 10);
 }

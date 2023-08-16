@@ -6,12 +6,12 @@ import { InsertLinkModal } from "src/link-input-modal";
 import { SelectionBtns } from "src/selection-menu";
 import { linkParse, loadIcons } from "src/util";
 
-export default class MyPlugin extends Plugin {
+export default class TypingAsstPlugin extends Plugin {
 	commands: CommandMenu;
 	btns: SelectionBtns;
 	linkModal: InsertLinkModal;
 	async onload() {
-		
+
 		// import svg to Obsidian-Icon 
 		loadIcons(ICON_MAP)
 
@@ -215,33 +215,33 @@ export default class MyPlugin extends Plugin {
 				this.btns.hide();
 			}
 		});
+		this.registerEvent(
+			this.app.workspace.on("active-leaf-change", () => {
+				const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (!view) return;
+				const scrollArea = view.containerEl.querySelector(".cm-scroller");
+				const appHeader = document.querySelector(".titlebar");
+				const viewHeader = view.containerEl.querySelector(".view-header");
+				const headerHeight =
+					(appHeader?.clientHeight ?? 0) +
+					(viewHeader?.clientHeight ?? 0);
 
-		this.app.workspace.on("active-leaf-change", () => {
-			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-			if (!view) return;
-			const scrollArea = view.containerEl.querySelector(".cm-scroller");
-			const appHeader = document.querySelector(".titlebar");
-			const viewHeader = view.containerEl.querySelector(".view-header");
-			const headerHeight =
-				(appHeader?.clientHeight ?? 0) +
-				(viewHeader?.clientHeight ?? 0);
-
-			if (!scrollArea) return;
-			this.commands = new CommandMenu({
-				scrollArea,
-				onMenu: onMenuClick,
-			});
-			this.btns = new SelectionBtns({
-				scrollArea,
-				headerHeight,
-				onAction: onSelectionAction,
-			});
-			scrollArea?.addEventListener("scroll", () => {
-				if (this.btns.isVisible()) {
-					handleSelection();
-				}
-			});
-		});
+				if (!scrollArea) return;
+				this.commands = new CommandMenu({
+					scrollArea,
+					onMenu: onMenuClick,
+				});
+				this.btns = new SelectionBtns({
+					scrollArea,
+					headerHeight,
+					onAction: onSelectionAction,
+				});
+				scrollArea?.addEventListener("scroll", () => {
+					if (this.btns.isVisible()) {
+						handleSelection();
+					}
+				});
+			}));
 
 		this.registerDomEvent(document, "input", (evt: InputEvent) => {
 			if (this.linkModal.isOpen) return;

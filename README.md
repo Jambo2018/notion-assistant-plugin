@@ -1,8 +1,8 @@
-# Notion Assistant
-Notion Assistant is a plugin that improves writing efficiency and provides a user experience similar to that of【Notion】
+# Typing Assistant
+Typing Assistant is a plugin that improves writing efficiency and provides a user experience similar to that of【Notion】
 
 ## Demo
-![Notion Assistant Demo](/src/assets/demo.gif)
+![Typing Assistant Demo](/src/assets/demo.gif)
 ## Usage
 - Install and activate the plugin
 - When you input a '/' in an empty line or the end of a line that not empty,you will get a command menu to help you choose type of the new line
@@ -17,6 +17,6 @@ Notion Assistant is a plugin that improves writing efficiency and provides a use
 - Open Settings > Third-Party Add-ons
 - Make sure safe mode is off
 - Click to browse community plugins
-- Search for "Notion Assistant"
+- Search for "Typing Assistant"
 - click install
 - Once installed, close the community plugin window and activate the newly installed plugin
