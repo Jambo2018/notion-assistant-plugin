@@ -21,10 +21,6 @@ export class SelectionBtns {
 		headerHeight: number;
 		onAction: (content: string, isHeading: boolean) => void;
 	}) {
-		const commandEle = document.body.querySelector("#selection-menu");
-		if (commandEle) {
-			document.body.removeChild(commandEle);
-		}
 		this.menu = createDiv({
 			cls: "selection",
 			attr: { id: "selection-menu" },
