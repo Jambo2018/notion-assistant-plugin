@@ -85,25 +85,24 @@ export class CommandMenu {
 				}, 150);
 			}
 		};
-		document.body.appendChild(this.menu);
+		this.scrollArea.appendChild(this.menu);
+		this.hide();
 	}
 	display = function () {
 		const range = window?.getSelection()?.getRangeAt(0);
 		const rect = range?.getBoundingClientRect();
-		const scrollAreaRect = this.scrollArea.getBoundingClientRect();
+		const scroll = this.scrollArea.getBoundingClientRect();
 		if (!rect) return;
 		let { height, top, left } = rect;
 		top += height;
-		const rightDis = left + MENU_WIDTH - this.scrollArea.clientWidth;
+		top -= scroll.top;
+		left -= scroll.left;
+		const rightDis = left + MENU_WIDTH - scroll.width;
 		if (rightDis > 0) {
 			left -= rightDis;
 		}
 		const upDis =
-			top +
-			MENU_HEIGHT -
-			this.scrollArea.clientHeight -
-			scrollAreaRect.top +
-			MENU_MARGIN;
+			top + MENU_HEIGHT - scroll.height - scroll.top + MENU_MARGIN;
 		if (upDis > 0) {
 			this.scrollArea.scrollTo(0, this.scrollArea.scrollTop + upDis);
 			top -= upDis;
@@ -121,5 +120,8 @@ export class CommandMenu {
 	};
 	isVisible = function () {
 		return !this.menu.hasClass("display-none");
+	};
+	clear = function () {
+		this.scrollArea.removeChild(this.menu);
 	};
 }

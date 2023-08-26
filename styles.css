@@ -173,6 +173,7 @@
 }
 .selection-btn path {
 	fill: var(--color-base-100);
+	stroke: var(--color-base-100);
 }
 
 .linemenu {

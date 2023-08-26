@@ -21,7 +21,14 @@ export class SelectionBtns {
 		headerHeight: number;
 		onAction: (content: string, isHeading: boolean) => void;
 	}) {
-		this.menu = createDiv({ cls: "selection", attr: { id: "selection" } });
+		const commandEle = document.body.querySelector("#selection-menu");
+		if (commandEle) {
+			document.body.removeChild(commandEle);
+		}
+		this.menu = createDiv({
+			cls: "selection",
+			attr: { id: "selection-menu" },
+		});
 		this.scrollArea = props.scrollArea as HTMLDivElement;
 		this.headerHeight = props.headerHeight;
 		const _this = this;
@@ -69,20 +76,24 @@ export class SelectionBtns {
 		});
 
 		this.menu.appendChild(this.lineMenu);
-		document.body.appendChild(this.menu);
+		this.scrollArea.appendChild(this.menu);
+		this.hide()
 	}
 	display = function (lineStyleText: string) {
 		const range = window?.getSelection()?.getRangeAt(0);
 		const rect = range?.getBoundingClientRect();
+		const scroll = this.scrollArea.getBoundingClientRect();
 		if (!rect) return;
 		let { height, top, left } = rect;
+		top -= scroll.top;
 		top += MENU_MARGIN + height;
+		left -=scroll.left;
 		const rightDis = left + MENU_WIDTH - this.scrollArea.clientWidth;
 		if (rightDis > 0) {
 			left -= rightDis;
 		}
 		this.menu.firstElementChild.firstElementChild.textContent =
-			lineStyleText;
+		lineStyleText;
 		if (top < this.headerHeight + 16) {
 			top = -999;
 		}
@@ -112,5 +123,8 @@ export class SelectionBtns {
 	};
 	isVisible = function () {
 		return !!document.querySelector(".selection");
+	};
+	clear = function () {
+		this.scrollArea.removeChild(this.menu);
 	};
 }

@@ -10,6 +10,7 @@ export default class TypingAsstPlugin extends Plugin {
 	commands: CommandMenu;
 	btns: SelectionBtns;
 	linkModal: InsertLinkModal;
+	scrollArea?: Element;
 	async onload() {
 
 		// import svg to Obsidian-Icon 
@@ -215,32 +216,44 @@ export default class TypingAsstPlugin extends Plugin {
 				this.btns.hide();
 			}
 		});
+		const scrollEvent = () => {
+			if (this.btns.isVisible()) {
+				handleSelection();
+			}
+		}
 		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", () => {
+				if (this.scrollArea) {
+					this.scrollArea.removeEventListener("scroll", scrollEvent);
+				}
 				const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (!view) return;
-				const scrollArea = view.containerEl.querySelector(".cm-scroller");
+				this.scrollArea = view.containerEl.querySelector(".cm-scroller") ?? undefined;
+				console.log('view=====>',view)
 				const appHeader = document.querySelector(".titlebar");
 				const viewHeader = view.containerEl.querySelector(".view-header");
 				const headerHeight =
 					(appHeader?.clientHeight ?? 0) +
 					(viewHeader?.clientHeight ?? 0);
 
-				if (!scrollArea) return;
+				if (!this.scrollArea) return;
+				const scrollArea = this.scrollArea;
+				if (this.commands) {
+					this.commands.clear()
+				}
 				this.commands = new CommandMenu({
 					scrollArea,
 					onMenu: onMenuClick,
 				});
+				if (this.btns) {
+					this.btns.clear()
+				}
 				this.btns = new SelectionBtns({
 					scrollArea,
 					headerHeight,
 					onAction: onSelectionAction,
 				});
-				scrollArea?.addEventListener("scroll", () => {
-					if (this.btns.isVisible()) {
-						handleSelection();
-					}
-				});
+				scrollArea?.addEventListener("scroll", scrollEvent);
 			}));
 
 		this.registerDomEvent(document, "input", (evt: InputEvent) => {
