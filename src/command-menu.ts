@@ -58,9 +58,9 @@ export class CommandMenu {
 				const focusEle = document.activeElement;
 				const cmd = focusEle?.getAttribute("commandType");
 				if (!cmd) return;
+				e?.preventDefault();
+				e?.stopPropagation();
 				if (key === "Enter") {
-					e?.preventDefault();
-					e?.stopPropagation();
 					props.onMenu((CONTENT_MAP as any)[cmd]);
 					_this.hide();
 				}
@@ -80,9 +80,6 @@ export class CommandMenu {
 					}
 				}
 				nextFocusEle?.focus();
-				setTimeout(() => {
-					nextFocusEle.scrollIntoView();
-				}, 150);
 			}
 		};
 		this.scrollArea.appendChild(this.menu);
