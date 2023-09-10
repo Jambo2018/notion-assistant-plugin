@@ -58,11 +58,12 @@ export const CMD_MAP = {
 	heading5: "editor:set-heading-5",
 	heading6: "editor:set-heading-6",
 	bulletList: "editor:toggle-bullet-list",
-	numberList: "editor:toggle-number-list",
+	numberList: "editor:toggle-numbered-list",
 	bold: "editor:toggle-bold",
 	strikethrough: "editor:toggle-strikethrough",
 	italics: "editor:toggle-italics",
 	underline: "typing-assistant:underline",
+	todoList: "typing-assistant:todo-list",
 	code: "editor:toggle-code",
 };
 

@@ -1,6 +1,12 @@
 import { Editor, MarkdownView, Plugin } from "obsidian";
 import { CommandMenu } from "src/command-menu";
-import { CMD_MAP, CODE_LAN, CONTENT_MAP, ICON_MAP, TEXT_MAP } from "src/constants";
+import {
+	CMD_MAP,
+	CODE_LAN,
+	CONTENT_MAP,
+	ICON_MAP,
+	TEXT_MAP,
+} from "src/constants";
 import { generateBookMark } from "src/link-bookmark";
 import { InsertLinkModal } from "src/link-input-modal";
 import { SelectionBtns } from "src/selection-menu";
@@ -12,9 +18,8 @@ export default class TypingAsstPlugin extends Plugin {
 	linkModal: InsertLinkModal;
 	scrollArea?: Element;
 	async onload() {
-
-		// import svg to Obsidian-Icon 
-		loadIcons(ICON_MAP)
+		// import svg to Obsidian-Icon
+		loadIcons(ICON_MAP);
 
 		const onSelectionAction = async (
 			content: string,
@@ -76,7 +81,9 @@ export default class TypingAsstPlugin extends Plugin {
 					view.editor.blur();
 					this.linkModal.open();
 				} else if (content === "code") {
-					(this.app as any).commands.executeCommandById(CMD_MAP["code"]);
+					(this.app as any).commands.executeCommandById(
+						CMD_MAP["code"]
+					);
 				} else {
 					if (editLine.length > 1) {
 						view.editor.replaceRange(
@@ -145,7 +152,9 @@ export default class TypingAsstPlugin extends Plugin {
 				for (const cmd in CONTENT_MAP) {
 					if (cmd === "text") {
 						continue;
-					} else if (lineContent.startsWith((CONTENT_MAP as any)[cmd])) {
+					} else if (
+						lineContent.startsWith((CONTENT_MAP as any)[cmd])
+					) {
 						lineStyle = (TEXT_MAP as any)[cmd];
 						break;
 					} else if (/^[\d]+\.\s/.test(lineContent)) {
@@ -177,6 +186,23 @@ export default class TypingAsstPlugin extends Plugin {
 					} else if (i > from.line && i === to.line) {
 						formatUnderline(editor, i, 0, to.ch);
 					}
+				}
+			},
+		});
+		this.addCommand({
+			id: "todo-list",
+			name: "Add TodoList",
+			editorCallback: (editor: Editor) => {
+				const { line, ch } = editor.getCursor();
+				const content = editor.getLine(line);
+				if (content.startsWith("[ ] ")) {
+					editor.replaceRange("", { line, ch: 0 }, { line, ch: 4 });
+				} else {
+					editor.replaceRange(
+						`${CONTENT_MAP["todoList"]}`,
+						{ line, ch: 0 },
+						{ line, ch: 0 }
+					);
 				}
 			},
 		});
@@ -220,18 +246,20 @@ export default class TypingAsstPlugin extends Plugin {
 			if (this.btns.isVisible()) {
 				handleSelection();
 			}
-		}
+		};
 		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", () => {
 				if (this.scrollArea) {
 					this.scrollArea.removeEventListener("scroll", scrollEvent);
 				}
-				const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+				const view =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (!view) return;
-				this.scrollArea = view.containerEl.querySelector(".cm-scroller") ?? undefined;
-				console.log('view=====>',view)
+				this.scrollArea =
+					view.containerEl.querySelector(".cm-scroller") ?? undefined;
 				const appHeader = document.querySelector(".titlebar");
-				const viewHeader = view.containerEl.querySelector(".view-header");
+				const viewHeader =
+					view.containerEl.querySelector(".view-header");
 				const headerHeight =
 					(appHeader?.clientHeight ?? 0) +
 					(viewHeader?.clientHeight ?? 0);
@@ -239,14 +267,14 @@ export default class TypingAsstPlugin extends Plugin {
 				if (!this.scrollArea) return;
 				const scrollArea = this.scrollArea;
 				if (this.commands) {
-					this.commands.clear()
+					this.commands.clear();
 				}
 				this.commands = new CommandMenu({
 					scrollArea,
 					onMenu: onMenuClick,
 				});
 				if (this.btns) {
-					this.btns.clear()
+					this.btns.clear();
 				}
 				this.btns = new SelectionBtns({
 					scrollArea,
@@ -254,7 +282,8 @@ export default class TypingAsstPlugin extends Plugin {
 					onAction: onSelectionAction,
 				});
 				scrollArea?.addEventListener("scroll", scrollEvent);
-			}));
+			})
+		);
 
 		this.registerDomEvent(document, "input", (evt: InputEvent) => {
 			if (this.linkModal.isOpen) return;
@@ -280,5 +309,5 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 	}
 
-	onunload() { }
+	onunload() {}
 }
