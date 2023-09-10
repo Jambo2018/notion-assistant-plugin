@@ -1,4 +1,4 @@
-import { setIcon } from "obsidian";
+import { Scope, setIcon } from "obsidian";
 import {
 	CMD_MAP,
 	HEADING_CMDS,
@@ -73,7 +73,7 @@ export class SelectionBtns {
 
 		this.menu.appendChild(this.lineMenu);
 		this.scrollArea.appendChild(this.menu);
-		this.hide()
+		this.hide();
 	}
 	display = function (lineStyleText: string) {
 		const range = window?.getSelection()?.getRangeAt(0);
@@ -81,15 +81,21 @@ export class SelectionBtns {
 		const scroll = this.scrollArea.getBoundingClientRect();
 		if (!rect) return;
 		let { height, top, left } = rect;
-		top -= scroll.top;
-		top += MENU_MARGIN + height;
-		left -=scroll.left;
+		top += MENU_MARGIN + height + this.scrollArea.scrollTop - scroll.top;
+		left -= scroll.left;
+
+		const upDis =
+			top + 56 - this.scrollArea.scrollTop - this.scrollArea.clientHeight;
+		if (upDis > 0) {
+			this.scrollArea.scrollTo(0, this.scrollArea.scrollTop + upDis);
+		}
+
 		const rightDis = left + MENU_WIDTH - this.scrollArea.clientWidth;
 		if (rightDis > 0) {
 			left -= rightDis;
 		}
 		this.menu.firstElementChild.firstElementChild.textContent =
-		lineStyleText;
+			lineStyleText;
 		if (top < this.headerHeight + 16) {
 			top = -999;
 		}
@@ -106,8 +112,8 @@ export class SelectionBtns {
 		const contentRect = this.scrollArea.getBoundingClientRect();
 		const topOffset =
 			rect.top +
-			36 +
-			386 -
+			rect.height +
+			430 -
 			this.scrollArea.clientHeight -
 			contentRect.top +
 			MENU_MARGIN;
