@@ -91,7 +91,7 @@ export class CommandMenu {
 		const scroll = this.scrollArea.getBoundingClientRect();
 		if (!rect) return;
 		let { height, top, left } = rect;
-		top += height;
+		top += height + this.scrollArea.scrollTop;
 		top -= scroll.top;
 		left -= scroll.left;
 		const rightDis = left + MENU_WIDTH - scroll.width;
@@ -99,11 +99,15 @@ export class CommandMenu {
 			left -= rightDis;
 		}
 		const upDis =
-			top + MENU_HEIGHT - scroll.height - scroll.top + MENU_MARGIN;
+			top +
+			MENU_HEIGHT +
+			MENU_MARGIN -
+			this.scrollArea.scrollTop -
+			this.scrollArea.clientHeight;
 		if (upDis > 0) {
 			this.scrollArea.scrollTo(0, this.scrollArea.scrollTop + upDis);
-			top -= upDis;
 		}
+
 		this.menu.style = `top:${top}px;left:${left}px`;
 		if (!this.isVisible()) {
 			this.menu.removeClass("display-none");
