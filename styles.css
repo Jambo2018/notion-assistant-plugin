@@ -218,7 +218,7 @@
 	bottom: 0;
 	left: 3px;
 	color: var(--empty-prompt);
-	content: "💡Please input ‘ / ’ for more commands...";
+	content: attr(promote-text);
 }
 
 .link-input input {
@@ -226,10 +226,10 @@
 }
 
 .scroll-disable {
-	overflow: hidden;
 	margin-right: 12px;
+	overflow: hidden;
 }
 
-.display-none{
+.display-none {
 	display: none;
 }

@@ -222,6 +222,7 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 
 		this.registerDomEvent(document, "keydown", (evt: KeyboardEvent) => {
+			renderEmptyText()
 			if (this.commands.isVisible()) {
 				const { key } = evt;
 				if (
@@ -249,12 +250,14 @@ export default class TypingAsstPlugin extends Plugin {
 		};
 		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", () => {
+
 				if (this.scrollArea) {
 					this.scrollArea.removeEventListener("scroll", scrollEvent);
 				}
 				const view =
 					this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (!view) return;
+
 				this.scrollArea =
 					view.containerEl.querySelector(".cm-scroller") ?? undefined;
 				const appHeader = document.querySelector(".titlebar");
@@ -303,11 +306,27 @@ export default class TypingAsstPlugin extends Plugin {
 			}
 		});
 
+		const renderEmptyText = () => {
+			const view =
+				this.app.workspace.getActiveViewOfType(MarkdownView);
+			if (!view) return;
+			setTimeout(() => {
+				const activeEle = view.containerEl.querySelector('.cm-active')
+				activeEle?.setAttribute('promote-text', "💡Please input ‘ / ’ for more commands...");
+			}, 50);
+		}
+		this.registerDomEvent(document, "pointermove", () => {
+			renderEmptyText()
+		});
+		this.registerDomEvent(document, "click", () => {
+			renderEmptyText()
+		});
+
 		this.registerMarkdownCodeBlockProcessor(CODE_LAN, (source, el, ctx) => {
 			const bookmark = generateBookMark(source);
 			el?.appendChild(bookmark);
 		});
 	}
 
-	onunload() {}
+	onunload() { }
 }
