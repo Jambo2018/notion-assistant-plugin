@@ -126,7 +126,7 @@ export class SelectionBtns {
 	isVisible = function () {
 		return !!document.querySelector(".selection");
 	};
-	clear = function () {
+	remove = function () {
 		this.scrollArea.removeChild(this.menu);
 	};
 }

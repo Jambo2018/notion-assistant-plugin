@@ -222,7 +222,7 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 
 		this.registerDomEvent(document, "keydown", (evt: KeyboardEvent) => {
-			renderEmptyText()
+			renderEmptyText();
 			if (this.commands.isVisible()) {
 				const { key } = evt;
 				if (
@@ -250,7 +250,6 @@ export default class TypingAsstPlugin extends Plugin {
 		};
 		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", () => {
-
 				if (this.scrollArea) {
 					this.scrollArea.removeEventListener("scroll", scrollEvent);
 				}
@@ -269,16 +268,12 @@ export default class TypingAsstPlugin extends Plugin {
 
 				if (!this.scrollArea) return;
 				const scrollArea = this.scrollArea;
-				if (this.commands) {
-					this.commands.clear();
-				}
+				this.commands?.remove();
 				this.commands = new CommandMenu({
 					scrollArea,
 					onMenu: onMenuClick,
 				});
-				if (this.btns) {
-					this.btns.clear();
-				}
+				this.btns?.remove();
 				this.btns = new SelectionBtns({
 					scrollArea,
 					headerHeight,
@@ -307,19 +302,21 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 
 		const renderEmptyText = () => {
-			const view =
-				this.app.workspace.getActiveViewOfType(MarkdownView);
+			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (!view) return;
 			setTimeout(() => {
-				const activeEle = view.containerEl.querySelector('.cm-active')
-				activeEle?.setAttribute('promote-text', "💡Please input ‘ / ’ for more commands...");
+				const activeEle = view.containerEl.querySelector(".cm-active");
+				activeEle?.setAttribute(
+					"promote-text",
+					"💡Please input ‘ / ’ for more commands..."
+				);
 			}, 50);
-		}
+		};
 		this.registerDomEvent(document, "pointermove", () => {
-			renderEmptyText()
+			renderEmptyText();
 		});
 		this.registerDomEvent(document, "click", () => {
-			renderEmptyText()
+			renderEmptyText();
 		});
 
 		this.registerMarkdownCodeBlockProcessor(CODE_LAN, (source, el, ctx) => {
@@ -328,5 +325,8 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 	}
 
-	onunload() { }
+	onunload() {
+		this.commands?.remove();
+		this.btns?.remove();
+	}
 }

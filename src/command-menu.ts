@@ -122,7 +122,7 @@ export class CommandMenu {
 	isVisible = function () {
 		return !this.menu.hasClass("display-none");
 	};
-	clear = function () {
+	remove = function () {
 		this.scrollArea.removeChild(this.menu);
 	};
 }
