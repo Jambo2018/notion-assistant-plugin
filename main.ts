@@ -162,7 +162,7 @@ export default class TypingAsstPlugin extends Plugin {
 						break;
 					}
 				}
-				this.btns.display(lineStyle);
+				this.btns?.display(lineStyle);
 			}
 		};
 
@@ -208,11 +208,9 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 
 		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
-			if (this.commands.isVisible()) {
-				this.commands.hide();
-			}
+			this.commands?.hide();
 			const selection = document.getSelection()?.toString();
-			if (!selection && this.btns.isVisible()) {
+			if (!selection && this.btns?.isVisible()) {
 				this.btns.hide();
 			}
 		});
@@ -223,7 +221,7 @@ export default class TypingAsstPlugin extends Plugin {
 
 		this.registerDomEvent(document, "keydown", (evt: KeyboardEvent) => {
 			renderEmptyText();
-			if (this.commands.isVisible()) {
+			if (this.commands?.isVisible()) {
 				const { key } = evt;
 				if (
 					key !== "ArrowUp" &&
@@ -239,48 +237,52 @@ export default class TypingAsstPlugin extends Plugin {
 					}
 				}
 			}
-			if (this.btns.isVisible()) {
-				this.btns.hide();
-			}
+			this.btns?.hide();
 		});
 		const scrollEvent = () => {
-			if (this.btns.isVisible()) {
+			if (this.btns?.isVisible()) {
 				handleSelection();
 			}
 		};
+
+		const renderPlugin = () => {
+			if (this.scrollArea) {
+				this.scrollArea.removeEventListener("scroll", scrollEvent);
+			}
+			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+			if (!view) return;
+			this.scrollArea =
+				view.containerEl.querySelector(".cm-scroller") ?? undefined;
+			const appHeader = document.querySelector(".titlebar");
+			const viewHeader = view.containerEl.querySelector(".view-header");
+			const headerHeight =
+				(appHeader?.clientHeight ?? 0) +
+				(viewHeader?.clientHeight ?? 0);
+
+			if (!this.scrollArea) return;
+			const scrollArea = this.scrollArea;
+
+			this.commands?.remove();
+			this.commands = new CommandMenu({
+				scrollArea,
+				onMenu: onMenuClick,
+			});
+
+			this.btns?.remove();
+			this.btns = new SelectionBtns({
+				scrollArea,
+				headerHeight,
+				onAction: onSelectionAction,
+			});
+
+			scrollArea?.addEventListener("scroll", scrollEvent);
+		};
+
+		/**Ensure that the plugin can be loaded and used immediately after it is turned on */
+		renderPlugin();
+
 		this.registerEvent(
-			this.app.workspace.on("active-leaf-change", () => {
-				if (this.scrollArea) {
-					this.scrollArea.removeEventListener("scroll", scrollEvent);
-				}
-				const view =
-					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (!view) return;
-
-				this.scrollArea =
-					view.containerEl.querySelector(".cm-scroller") ?? undefined;
-				const appHeader = document.querySelector(".titlebar");
-				const viewHeader =
-					view.containerEl.querySelector(".view-header");
-				const headerHeight =
-					(appHeader?.clientHeight ?? 0) +
-					(viewHeader?.clientHeight ?? 0);
-
-				if (!this.scrollArea) return;
-				const scrollArea = this.scrollArea;
-				this.commands?.remove();
-				this.commands = new CommandMenu({
-					scrollArea,
-					onMenu: onMenuClick,
-				});
-				this.btns?.remove();
-				this.btns = new SelectionBtns({
-					scrollArea,
-					headerHeight,
-					onAction: onSelectionAction,
-				});
-				scrollArea?.addEventListener("scroll", scrollEvent);
-			})
+			this.app.workspace.on("active-leaf-change", renderPlugin)
 		);
 
 		this.registerDomEvent(document, "input", (evt: InputEvent) => {
@@ -292,11 +294,9 @@ export default class TypingAsstPlugin extends Plugin {
 				const cursor = view.editor.getCursor();
 				const editLine = view.editor.getLine(cursor.line);
 				if (editLine.replace(/[\s]*$/, "").length <= cursor.ch) {
-					this.commands.display();
+					this.commands?.display();
 				} else {
-					if (this.commands.isVisible()) {
-						this.commands.hide();
-					}
+					this.commands?.hide();
 				}
 			}
 		});
