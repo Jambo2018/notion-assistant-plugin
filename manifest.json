@@ -1,7 +1,7 @@
 {
 	"id": "typing-assistant",
 	"name": "Typing Assistant",
-	"version": "0.1.9",
+	"version": "0.2.0",
 	"minAppVersion": "0.15.0",
 	"description": "Support multiple shortcut menus to improve input efficiency",
 	"author": "Jambo",
