@@ -10,6 +10,7 @@ import {
 import { generateBookMark } from "src/link-bookmark";
 import { InsertLinkModal } from "src/link-input-modal";
 import { SelectionBtns } from "src/selection-menu";
+import { type ExamplePluginSettings, ExampleSettingTab } from "src/setting";
 import { linkParse, loadIcons } from "src/util";
 
 export default class TypingAsstPlugin extends Plugin {
@@ -17,7 +18,20 @@ export default class TypingAsstPlugin extends Plugin {
 	btns: SelectionBtns;
 	linkModal: InsertLinkModal;
 	scrollArea?: Element;
+	settings: ExamplePluginSettings;
+	async loadSettings() {
+		this.settings = Object.assign({}, {}, await this.loadData());
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
+
 	async onload() {
+		await this.loadSettings();
+
+		this.addSettingTab(new ExampleSettingTab(this.app, this));
+
 		// import svg to Obsidian-Icon
 		loadIcons(ICON_MAP);
 
@@ -302,6 +316,7 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 
 		const renderEmptyText = () => {
+			if (!this.settings.showPlaceholder) return;
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (!view) return;
 			setTimeout(() => {
