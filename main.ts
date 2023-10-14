@@ -25,16 +25,19 @@ export default class TypingAsstPlugin extends Plugin {
 			content: string,
 			isHeading: boolean
 		) => {
+			const view =
+				this.app.workspace.getActiveViewOfType(MarkdownView);
+			if (!view?.editor) return;
 			if (isHeading) {
-				const view =
-					this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (!view?.editor) return;
 				const editor = view.editor;
 				const cursor = editor.getCursor();
 				const lineContent = editor.getLine(cursor.line);
 				editor.setLine(cursor.line, lineContent.replace(/^.*?\s/, ""));
 			}
 			(this.app as any).commands.executeCommandById(content);
+			if (content === CMD_MAP["link"]) {
+				view.editor.focus();
+			}
 			this.btns.hide();
 		};
 

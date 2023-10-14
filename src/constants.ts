@@ -66,6 +66,7 @@ export const CMD_MAP = {
 	underline: "typing-assistant:underline",
 	todoList: "typing-assistant:todo-list",
 	code: "editor:toggle-code",
+	link:'editor:insert-link'
 };
 
 export const CONTENT_MAP = {
