@@ -10,7 +10,7 @@ export default class ExamplePlugin extends Plugin {
     settings: ExamplePluginSettings;
 
     async loadSettings() {
-        this.settings = Object.assign({}, {}, await this.loadData());
+        this.settings = Object.assign({}, { showPlaceholder: true }, await this.loadData());
     }
 
     async saveSettings() {

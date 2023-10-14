@@ -20,7 +20,7 @@ export default class TypingAsstPlugin extends Plugin {
 	scrollArea?: Element;
 	settings: ExamplePluginSettings;
 	async loadSettings() {
-		this.settings = Object.assign({}, {}, await this.loadData());
+		this.settings = Object.assign({}, { showPlaceholder: true }, await this.loadData());
 	}
 
 	async saveSettings() {
