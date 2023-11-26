@@ -1,17 +1,16 @@
-import { Editor, MarkdownView, Plugin } from "obsidian";
-import { CommandMenu } from "src/command-menu";
+import { MarkdownView, Plugin } from "obsidian";
+import { CommandMenu } from "src/components/command-menu";
 import {
-	CMD_MAP,
+	CMD_CONFIG,
 	CODE_LAN,
 	CONTENT_MAP,
 	ICON_MAP,
 	TEXT_MAP,
 } from "src/constants";
-import { generateBookMark } from "src/link-bookmark";
-import { InsertLinkModal } from "src/link-input-modal";
-import { SelectionBtns } from "src/selection-menu";
-import { type ExamplePluginSettings, ExampleSettingTab } from "src/setting";
-import { linkParse, loadIcons } from "src/util";
+import { InsertLinkModal } from "src/components/link-input-modal";
+import { SelectionBtns } from "src/components/selection-menu";
+import { type ExamplePluginSettings, ExampleSettingTab } from "src/components/plugin-setting";
+import { linkParse, loadIcons, loadCommands, generateBookMark } from "src/util/util";
 
 export default class TypingAsstPlugin extends Plugin {
 	commands: CommandMenu;
@@ -21,6 +20,7 @@ export default class TypingAsstPlugin extends Plugin {
 	settings: ExamplePluginSettings;
 	async loadSettings() {
 		this.settings = Object.assign({}, { showPlaceholder: true }, await this.loadData());
+		// console.log('commands======>', this.app.commands.commands)
 	}
 
 	async saveSettings() {
@@ -28,7 +28,10 @@ export default class TypingAsstPlugin extends Plugin {
 	}
 
 	async onload() {
+
 		await this.loadSettings();
+
+		loadCommands.call(this)
 
 		this.addSettingTab(new ExampleSettingTab(this.app, this));
 
@@ -48,77 +51,24 @@ export default class TypingAsstPlugin extends Plugin {
 				const lineContent = editor.getLine(cursor.line);
 				editor.setLine(cursor.line, lineContent.replace(/^.*?\s/, ""));
 			}
-			(this.app as any).commands.executeCommandById(content);
-			if (content === CMD_MAP["link"]) {
+			(this.app as any).commands.executeCommandById(CMD_CONFIG[content].cmd);
+			if (content === "set-link") {
 				view.editor.focus();
 			}
 			this.btns.hide();
 		};
 
-		const formatUnderline = (
-			editor: Editor,
-			line: number,
-			left: number,
-			right: number
-		) => {
-			// range of selected content
-			const selectedRange = [
-				{ line, ch: left },
-				{ line, ch: right },
-			] as const;
-			let selection = editor.getRange(...selectedRange);
-			if (/((?!u>).*?)((<u>(?!u>).*<\/u>)+)((?!u>).*?)/.test(selection)) {
-				selection = selection.replace(/<\/?u>/g, "");
-			}
-			editor.replaceRange(`<u>${selection}</u>`, ...selectedRange);
-			const content = editor.getLine(line);
-			const arr = content.split(/<\/?u>/g);
-			let joinContent = "";
-			arr.forEach((item, index) => {
-				if (index % 2 === 0) {
-					joinContent += item ?? "";
-					if (index < arr.length - 1) {
-						joinContent += "<u>";
-					}
-				} else {
-					joinContent += (item ?? "") + "</u>";
-				}
-			});
-			joinContent = joinContent.replace(/(<\/u><u>)|(<u><\/u>)/g, "");
-			editor.setLine(line, joinContent);
-		};
 
 		const onMenuClick = async (content: string) => {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
-				const cursor = view.editor.getCursor();
-				const editLine = view.editor.getLine(cursor.line);
-
 				if (content === "bookmark") {
 					view.editor.blur();
 					this.linkModal.open();
-				} else if (content === "code") {
-					(this.app as any).commands.executeCommandById(
-						CMD_MAP["code"]
-					);
 				} else {
-					if (editLine.length > 1) {
-						view.editor.replaceRange(
-							`\n${content}`,
-							{ line: cursor.line, ch: cursor.ch - 1 },
-							cursor
-						);
-						view.editor.setCursor({
-							line: cursor.line + 1,
-							ch: content.length,
-						});
-					} else {
-						view.editor.setLine(cursor.line, content);
-						view.editor.setCursor({
-							line: cursor.line,
-							ch: content.length,
-						});
-					}
+					(this.app as any).commands.executeCommandById(
+						CMD_CONFIG[content].cmd
+					);
 					view.editor.focus();
 				}
 			}
@@ -169,6 +119,12 @@ export default class TypingAsstPlugin extends Plugin {
 				for (const cmd in CONTENT_MAP) {
 					if (cmd === "text") {
 						continue;
+					} else if (/^\> \[!/.test(lineContent)) {
+						lineStyle = TEXT_MAP["callout"];
+						break;
+					} else if (/^\`\`\`/.test(lineContent)) {
+						lineStyle = TEXT_MAP["code"];
+						break;
 					} else if (
 						lineContent.startsWith((CONTENT_MAP as any)[cmd])
 					) {
@@ -184,45 +140,6 @@ export default class TypingAsstPlugin extends Plugin {
 		};
 
 		this.linkModal = new InsertLinkModal(this.app, onLinkSubmit);
-
-		// This adds a simple command that can be triggered anywhere
-		this.addCommand({
-			id: "underline",
-			name: "Underline/Cancel underline",
-			editorCallback: (editor: Editor) => {
-				const from = editor.getCursor("from");
-				const to = editor.getCursor("to");
-				for (let i = from.line; i <= to.line; i++) {
-					const len = editor.getLine(i).length;
-					if (from.line === to.line) {
-						formatUnderline(editor, i, from.ch, to.ch);
-					} else if (i === from.line && i < to.line) {
-						formatUnderline(editor, i, from.ch, len);
-					} else if (i > from.line && i < to.line) {
-						formatUnderline(editor, i, 0, len);
-					} else if (i > from.line && i === to.line) {
-						formatUnderline(editor, i, 0, to.ch);
-					}
-				}
-			},
-		});
-		this.addCommand({
-			id: "todo-list",
-			name: "Add TodoList",
-			editorCallback: (editor: Editor) => {
-				const { line, ch } = editor.getCursor();
-				const content = editor.getLine(line);
-				if (content.startsWith("[ ] ")) {
-					editor.replaceRange("", { line, ch: 0 }, { line, ch: 4 });
-				} else {
-					editor.replaceRange(
-						`${CONTENT_MAP["todoList"]}`,
-						{ line, ch: 0 },
-						{ line, ch: 0 }
-					);
-				}
-			},
-		});
 
 		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
 			this.commands?.hide();
@@ -258,7 +175,7 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 		const scrollEvent = () => {
 			if (this.btns?.isVisible()) {
-				handleSelection();
+				// handleSelection();
 			}
 		};
 

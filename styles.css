@@ -226,7 +226,7 @@
 }
 
 .scroll-disable {
-	margin-right: 12px;
+	/* margin-right: 12px; */
 	overflow: hidden;
 }
 

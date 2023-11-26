@@ -1,5 +1,5 @@
 import { App, Modal, Setting, Notice, debounce } from "obsidian";
-import { VALID_URL_REG } from "./constants";
+import { VALID_URL_REG } from "../constants";
 
 /**
  * url-input modal

@@ -1,12 +1,12 @@
-import { Scope, setIcon } from "obsidian";
+import { setIcon } from "obsidian";
 import {
-	CMD_MAP,
+	CMD_CONFIG,
 	HEADING_CMDS,
 	MENU_MARGIN,
 	MENU_WIDTH,
 	SELECTION_CMDS,
 	TEXT_MAP,
-} from "./constants";
+} from "../constants";
 
 /**
  * the menu visible while text selected
@@ -37,7 +37,7 @@ export class SelectionBtns {
 			if (idx === 0) {
 				btn.createSpan(TEXT_MAP["text"]);
 			} else {
-				setIcon(btn, item);
+				setIcon(btn, CMD_CONFIG[item].icon);
 			}
 			btn.onclick = function (e) {
 				if (idx === 0) {
@@ -45,7 +45,7 @@ export class SelectionBtns {
 					e.stopPropagation();
 					_this.showHeading();
 				} else {
-					props.onAction((CMD_MAP as any)[item], false);
+					props.onAction(item, false);
 				}
 			};
 			menu_content.appendChild(btn);
@@ -63,10 +63,10 @@ export class SelectionBtns {
 				parent: btn,
 				cls: "linemenu-option-svg",
 			});
-			setIcon(IconDiv, item);
-			btn.createSpan({ text: TEXT_MAP[item] });
+			setIcon(IconDiv, CMD_CONFIG[item].icon);
+			btn.createSpan({ text: CMD_CONFIG[item].title });
 			btn.onclick = function () {
-				props.onAction((CMD_MAP as any)[item], true);
+				props.onAction(item, true);
 			};
 			this.lineMenu.appendChild(btn);
 		});

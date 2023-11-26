@@ -1,12 +1,11 @@
-import { addIcon, setIcon } from "obsidian";
+import { setIcon } from "obsidian";
 import {
-	CONTENT_MAP,
+	CMD_CONFIG,
 	HEADING_MENU,
 	MENU_HEIGHT,
 	MENU_MARGIN,
 	MENU_WIDTH,
-	TEXT_MAP,
-} from "./constants";
+} from "../constants";
 
 /**
  * show the menu while input a '/' in an empty line or the end of a line that not empty
@@ -29,10 +28,10 @@ export class CommandMenu {
 				attr: { tabindex: -1, commandType: item },
 			});
 			const IconDiv = createDiv({ parent: btn });
-			setIcon(IconDiv, item);
-			btn.createSpan({ text: TEXT_MAP[item] });
+			setIcon(IconDiv, CMD_CONFIG[item].icon);
+			btn.createSpan({ text: CMD_CONFIG[item].title });
 			btn.onclick = function () {
-				props.onMenu(CONTENT_MAP[item]);
+				props.onMenu(item);
 			};
 			btn.onmouseenter = function () {
 				if (_this.mouseMoved) {
@@ -61,7 +60,7 @@ export class CommandMenu {
 				e?.preventDefault();
 				e?.stopPropagation();
 				if (key === "Enter") {
-					props.onMenu((CONTENT_MAP as any)[cmd]);
+					props.onMenu(cmd);
 					_this.hide();
 				}
 				let nextFocusEle: HTMLElement = focusEle as HTMLElement;

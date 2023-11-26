@@ -1,5 +1,6 @@
 import { addIcon, request } from "obsidian";
-
+export * from './cmd-generate';
+export * from "./link-bookmark";
 export interface LinkResult {
 	url: string;
 	title?: string;
@@ -58,17 +59,6 @@ export const linkParse = async (link: string): Promise<LinkResult> => {
 		return result;
 	}
 };
-
-// export const debounce = (fn: Function, delay: number) => {
-// 	let handle: NodeJS.Timeout | null = null;
-// 	return function () {
-// 		if (handle) clearTimeout(handle);
-// 		handle = setTimeout(() => {
-// 			fn();
-// 			handle = null;
-// 		}, delay);
-// 	};
-// };
 
 export const loadIcons = (icons: Record<string, string>): void => {
 	for (const key in icons) {
