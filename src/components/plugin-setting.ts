@@ -1,5 +1,6 @@
 // import ExamplePlugin from "./main";
 import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
+import Sortable from "sortablejs";
 
 export interface ExamplePluginSettings {
     showPlaceholder: boolean;
@@ -26,7 +27,7 @@ export class ExampleSettingTab extends PluginSettingTab {
     }
 
     display(): void {
-        let { containerEl } = this;
+        const { containerEl } = this;
 
         containerEl.empty();
 
@@ -49,5 +50,32 @@ export class ExampleSettingTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     })
             );
+
+
+        const CmdSettings = containerEl.createDiv({ cls: "setting-heading" })
+
+        const CmdsOn = containerEl.createDiv({ text: "using", attr: { id: 'cmds-on' }, cls: "setting-heading-container" });
+        for (let i = 0; i < 5; i++) {
+            CmdsOn.createDiv({ text: i.toString(), cls: "setting-heading-ele" })
+        }
+
+        const CmdsOff = containerEl.createDiv({ text: 'unused', attr: { id: 'cmds-off' }, cls: "setting-heading-container" });
+        for (let i = 6; i < 10; i++) {
+            CmdsOff.createDiv({ text: i.toString(), cls: "setting-heading-ele" })
+        }
+        CmdSettings.appendChild(CmdsOn)
+        CmdSettings.appendChild(CmdsOff)
+
+        new Sortable(document.getElementById('cmds-on'), {
+            // group: 'cmds-setting',
+            onEnd: e => console.log(e.newDraggableIndex),
+            direction: "horizontal"
+        })
+
+        // new Sortable(document.getElementById('cmds-off'), {
+        //     // group: 'cmds-setting',
+        //     onEnd: e => console.log(e.newDraggableIndex),
+        //     direction: "horizontal"
+        // })
     }
 }

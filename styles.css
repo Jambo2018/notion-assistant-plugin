@@ -233,3 +233,32 @@
 .display-none {
 	display: none;
 }
+
+
+
+.setting-heading{
+	display: flex;
+	justify-content: space-between;
+	/* align-items: center; */
+}
+.setting-heading-container{
+	height:48px;
+	padding: 0 24px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 12px;
+	border-radius: 12px;
+	border: 1px solid var(--bookmark-border);
+}
+
+.setting-heading-ele{
+	width: 30px;
+	height: 30px;
+	background-color: aqua;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}

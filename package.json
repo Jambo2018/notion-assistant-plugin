@@ -10,7 +10,7 @@
 	},
 	"keywords": [],
 	"author": "Jambo",
-	"repository":"https://github.com/Jambo2018/notion-assistant-plugin",
+	"repository": "https://github.com/Jambo2018/notion-assistant-plugin",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
@@ -21,5 +21,8 @@
 		"obsidian": "latest",
 		"tslib": "2.4.0",
 		"typescript": "4.7.4"
+	},
+	"dependencies": {
+		"sortablejs": "^1.15.0"
 	}
 }
