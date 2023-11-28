@@ -19,7 +19,7 @@ export default class TypingAsstPlugin extends Plugin {
 	scrollArea?: Element;
 	settings: ExamplePluginSettings;
 	async loadSettings() {
-		this.settings = Object.assign({}, { showPlaceholder: true }, await this.loadData());
+		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: [] }, await this.loadData());
 		// console.log('commands======>', this.app.commands.commands)
 	}
 
