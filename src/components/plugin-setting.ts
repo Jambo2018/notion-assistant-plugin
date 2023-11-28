@@ -7,7 +7,6 @@ import { CMD_CONFIG, HEADING_MENU } from "src/constants";
 type CMD_TYPE = (typeof HEADING_MENU)[number]
 export interface ExamplePluginSettings {
     showPlaceholder: boolean;
-    test: string;
     cmdsSorting: CMD_TYPE[]
 }
 export class ExampleSettingTab extends PluginSettingTab {
@@ -46,10 +45,10 @@ export class ExampleSettingTab extends PluginSettingTab {
             .setName("Commands")
             .setDesc("Commands Config and Sorting")
 
-        const CmdSettings = containerEl.createDiv({ cls: "setting-heading" })
+        const CmdSettings = containerEl.createDiv({ cls: "heading-config" })
 
-        const CmdsOn = containerEl.createDiv({ attr: { id: 'cmds-on' }, cls: "setting-heading-config-on" });
-        const CmdsOff = containerEl.createDiv({ attr: { id: 'cmds-off' }, cls: "setting-heading-config-off" });
+        const CmdsOn = containerEl.createDiv({ attr: { id: 'cmds-on' }, cls: "heading-config-on" });
+        const CmdsOff = containerEl.createDiv({ attr: { id: 'cmds-off' }, cls: "heading-config-off" });
 
         CmdSettings.appendChild(CmdsOn)
         CmdSettings.appendChild(CmdsOff)
@@ -61,9 +60,9 @@ export class ExampleSettingTab extends PluginSettingTab {
             let HeaderItem: HTMLDivElement;
             const isChecked = this.plugin.settings.cmdsSorting.includes(cmd)
             if (isChecked) {
-                HeaderItem = CmdsOn.createDiv({ cls: 'setting-heading-item-on' })
+                HeaderItem = CmdsOn.createDiv({ cls: 'heading-item' })
             } else {
-                HeaderItem = CmdsOff.createDiv({ cls: 'setting-heading-item-on' })
+                HeaderItem = CmdsOff.createDiv({ cls: 'heading-item' })
             }
             setIcon(HeaderItem, CMD_CONFIG[cmd].icon);
             new Setting(HeaderItem)
