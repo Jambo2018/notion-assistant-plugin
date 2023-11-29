@@ -1,6 +1,6 @@
 // import ExamplePlugin from "./main";
 import TypingAsstPlugin from "main";
-import { App, Editor, Notice, PluginSettingTab, Setting, setIcon } from "obsidian";
+import { App, PluginSettingTab, Setting, setIcon } from "obsidian";
 import Sortable from "sortablejs";
 import { CMD_CONFIG, HEADING_MENU } from "src/constants";
 

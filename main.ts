@@ -52,7 +52,7 @@ export default class TypingAsstPlugin extends Plugin {
 				const lineContent = editor.getLine(cursor.line);
 				editor.setLine(cursor.line, lineContent.replace(/^.*?\s/, ""));
 			}
-			(this.app as any).commands.executeCommandById(CMD_CONFIG[content].cmd);
+			(this.app as any).commands.executeCommandById((CMD_CONFIG as any)[content].cmd);
 			if (content === "set-link") {
 				view.editor.focus();
 			}

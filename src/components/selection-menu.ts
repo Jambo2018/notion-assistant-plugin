@@ -37,7 +37,7 @@ export class SelectionBtns {
 			if (idx === 0) {
 				btn.createSpan(TEXT_MAP["text"]);
 			} else {
-				setIcon(btn, CMD_CONFIG[item].icon);
+				setIcon(btn, (CMD_CONFIG as any)[item].icon);
 			}
 			btn.onclick = function (e) {
 				if (idx === 0) {
