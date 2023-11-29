@@ -110,6 +110,7 @@ export const HEADING_MENU = [
 	'insert-math',
 	'insert-quote',
 	'insert-embed',
+	"bookmark",
 	'insert-todo',
 	'insert-bulletList',
 	'insert-numberList',
@@ -244,7 +245,11 @@ export const CMD_CONFIG = {
 		cmd: 'editor:toggle-highlight'
 	},
 
-
+	"bookmark": {
+		title: 'Link BookMark',
+		icon: 'link',
+		cmd: 'bookmark'
+	},
 
 	'set-text': {
 		title: 'Text',

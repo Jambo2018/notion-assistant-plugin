@@ -10,7 +10,7 @@ import {
 } from "src/constants";
 import { InsertLinkModal } from "src/components/link-input-modal";
 import { SelectionBtns } from "src/components/selection-menu";
-import { type ExamplePluginSettings, ExampleSettingTab } from "src/components/plugin-setting";
+import { type ExamplePluginSettings, ExampleSettingTab, CMD_TYPE } from "src/components/plugin-setting";
 import { linkParse, loadIcons, loadCommands, generateBookMark } from "src/util/util";
 
 export default class TypingAsstPlugin extends Plugin {
@@ -60,7 +60,7 @@ export default class TypingAsstPlugin extends Plugin {
 		};
 
 
-		const onMenuClick = async (content: string) => {
+		const onMenuClick = async (content: CMD_TYPE) => {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
 				if (content === "bookmark") {
