@@ -272,4 +272,5 @@
 }
 .heading-item path{
 	stroke: var(--color-base-100);
+	fill: var(--color-base-100);
 }
