@@ -1,6 +1,6 @@
 {
 	"name": "typing-assistant",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Notion Assistant is a plugin that improves input efficiency and provides a user experience similar to that of【Notion】",
 	"main": "main.js",
 	"scripts": {

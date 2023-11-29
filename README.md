@@ -15,6 +15,8 @@ Typing Assistant is a plugin that improves writing efficiency and provides a use
 - Support settings relular styles of markdown to selected text
 - The menu actively follows the cursor position of writing
 - Support input link address to generate personalized card
+- Supports custom command combinations and drag-and-drop sorting
+
 ## Installation
 - Open Settings > Third-Party Add-ons
 - Make sure safe mode is off
