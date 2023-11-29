@@ -1,16 +1,17 @@
 // import ExamplePlugin from "./main";
 import TypingAsstPlugin from "main";
-import { App, PluginSettingTab, Setting, setIcon } from "obsidian";
+import { App, Editor, Notice, PluginSettingTab, Setting, setIcon } from "obsidian";
 import Sortable from "sortablejs";
 import { CMD_CONFIG, HEADING_MENU } from "src/constants";
 
-type CMD_TYPE = (typeof HEADING_MENU)[number]
+export type CMD_TYPE = (typeof HEADING_MENU)[number]
 export interface ExamplePluginSettings {
     showPlaceholder: boolean;
     cmdsSorting: CMD_TYPE[]
 }
 export class ExampleSettingTab extends PluginSettingTab {
     plugin: TypingAsstPlugin;
+    hasChanged: boolean;
 
     constructor(app: App, plugin: TypingAsstPlugin) {
         super(app, plugin);
@@ -42,8 +43,8 @@ export class ExampleSettingTab extends PluginSettingTab {
             );
 
         new Setting(containerEl)
-            .setName("Commands")
-            .setDesc("Commands Config and Sorting")
+            .setName("Commands Menu")
+            .setDesc("Supports custom command combinations and drag-and-drop sorting; please ensure that at least 5 commands are open")
 
         const CmdSettings = containerEl.createDiv({ cls: "heading-config" })
 
@@ -79,9 +80,11 @@ export class ExampleSettingTab extends PluginSettingTab {
                                 CmdsOff.removeChild(HeaderItem)
                                 CmdsOn.appendChild(HeaderItem)
                             }
+                            this.hasChanged = true;
                             this.plugin.settings.cmdsSorting = [...cmdsSorting]
                             await this.plugin.saveSettings();
-                        }))
+                        })
+                ).setDisabled(cmdsSorting.length <= 5 && cmdsSorting.includes(cmd))
         }
 
         new Sortable(CmdsOn, {
@@ -90,8 +93,15 @@ export class ExampleSettingTab extends PluginSettingTab {
                     return HEADING_MENU.find(cmd => CMD_CONFIG[cmd].title === item.textContent)
                 })
                 this.plugin.settings.cmdsSorting = [...cmdsSorting] as CMD_TYPE[]
+                this.hasChanged = true;
                 await this.plugin.saveSettings();
             },
         })
+    }
+
+    hide() {
+        if (this.hasChanged) {
+            (this.app as any).commands.executeCommandById("app:reload");
+        }
     }
 }

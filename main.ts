@@ -4,6 +4,7 @@ import {
 	CMD_CONFIG,
 	CODE_LAN,
 	CONTENT_MAP,
+	HEADING_MENU,
 	ICON_MAP,
 	TEXT_MAP,
 } from "src/constants";
@@ -19,7 +20,7 @@ export default class TypingAsstPlugin extends Plugin {
 	scrollArea?: Element;
 	settings: ExamplePluginSettings;
 	async loadSettings() {
-		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: [] }, await this.loadData());
+		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: HEADING_MENU }, await this.loadData());
 		// console.log('commands======>', this.app.commands.commands)
 	}
 
@@ -200,6 +201,7 @@ export default class TypingAsstPlugin extends Plugin {
 			this.commands = new CommandMenu({
 				scrollArea,
 				onMenu: onMenuClick,
+				cmds:this.settings.cmdsSorting
 			});
 
 			this.btns?.remove();

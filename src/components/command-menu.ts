@@ -1,11 +1,12 @@
 import { setIcon } from "obsidian";
 import {
 	CMD_CONFIG,
-	HEADING_MENU,
-	MENU_HEIGHT,
+	COMMAD_ITEM_EIGHT,
+	MAX_MENU_HEIGHT,
 	MENU_MARGIN,
 	MENU_WIDTH,
 } from "../constants";
+import { CMD_TYPE } from "./plugin-setting";
 
 /**
  * show the menu while input a '/' in an empty line or the end of a line that not empty
@@ -14,14 +15,17 @@ export class CommandMenu {
 	menu: HTMLDivElement;
 	scrollArea?: HTMLDivElement;
 	mouseMoved: boolean;
+	menuHieght: number;
 	constructor(props: {
 		scrollArea?: Element;
 		onMenu: (content: string) => void;
+		cmds: CMD_TYPE[]
 	}) {
 		this.menu = createDiv({ cls: "command", attr: { id: "command-menu" } });
 		this.mouseMoved = false;
 		this.scrollArea = props.scrollArea as HTMLDivElement;
-		HEADING_MENU.forEach((item, idx) => {
+		this.menuHieght = Math.min(COMMAD_ITEM_EIGHT * props.cmds.length, MAX_MENU_HEIGHT)
+		props.cmds.forEach((item, idx) => {
 			const btn = createDiv({
 				parent: this.menu,
 				cls: "command-option",
@@ -97,9 +101,10 @@ export class CommandMenu {
 		if (rightDis > 0) {
 			left -= rightDis;
 		}
+
 		const upDis =
 			top +
-			MENU_HEIGHT +
+			this.menuHieght +
 			MENU_MARGIN -
 			this.scrollArea.scrollTop -
 			this.scrollArea.clientHeight;

@@ -20,7 +20,7 @@
 	position: absolute;
 	z-index: 9;
 	width: 240px;
-	height: 400px;
+	max-height: 400px;
 	overflow-y: auto;
 	background-color: var(--color-base-20);
 	border-radius: 5px;
@@ -270,7 +270,7 @@
 		border-top: none;
 	}
 }
-.heading-item path{
-	stroke: var(--color-base-100);
+.heading-item path {
 	fill: var(--color-base-100);
+	stroke: var(--color-base-100);
 }

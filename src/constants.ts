@@ -98,23 +98,23 @@ export const CONTENT_MAP = {
 };
 
 export const HEADING_MENU = [
-	'insert-callout',
-	'insert-tag',
-	'insert-quote',
-	'insert-math',
-	'insert-embed',
 	'insert-text',
+	'insert-callout',
 	'insert-heading1',
 	'insert-heading2',
 	'insert-heading3',
 	'insert-heading4',
 	'insert-heading5',
 	'insert-heading6',
+	'insert-tag',
+	'insert-math',
+	'insert-quote',
+	'insert-embed',
 	'insert-todo',
 	'insert-bulletList',
 	'insert-numberList',
+	'insert-code',
 	'insert-divide',
-	'insert-code'
 ] as const;
 
 export const HEADING_CMDS = [
@@ -332,7 +332,8 @@ export const CMD_CONFIG = {
 
 export const CODE_LAN = "link-bookmark";
 export const MENU_WIDTH = 300;
-export const MENU_HEIGHT = 400;
+export const MAX_MENU_HEIGHT = 400;
+export const COMMAD_ITEM_EIGHT = 46;
 export const MENU_MARGIN = 6;
 export const VALID_URL_REG =
 	/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
