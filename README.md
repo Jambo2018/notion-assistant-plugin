@@ -3,8 +3,12 @@ Typing Assistant is a plugin that improves writing efficiency and provides a use
 
 ![GitHub all releases](https://img.shields.io/github/downloads/jambo2018/notion-assistant-plugin/total)
 
-## Demo
+## Demo 1
 ![Typing Assistant Demo](/src/assets/demo.gif)
+
+## Demo 2
+https://github.com/alisahanyalcin/Typing-Assistant/assets/34830846/0994312e-ab97-45b1-b810-d1a9b62b9c40
+
 ## Usage
 - Install and activate the plugin
 - When you input a '/' in an empty line or the end of a line that not empty,you will get a command menu to help you choose type of the new line
