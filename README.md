@@ -1,7 +1,7 @@
 # Typing Assistant
 Typing Assistant is a plugin that improves writing efficiency and provides a user experience similar to that of Notion
 
-![GitHub all releases](https://img.shields.io/github/downloads/alisahanyalcin/Typing-Assistant/total)
+![GitHub all releases](https://img.shields.io/github/downloads/jambo2018/notion-assistant-plugin/total)
 
 ## Demo 1
 ![Typing Assistant Demo](/src/assets/demo.gif)
