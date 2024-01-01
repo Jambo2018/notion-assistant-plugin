@@ -65,7 +65,8 @@ export class ExampleSettingTab extends PluginSettingTab {
             } else {
                 HeaderItem = CmdsOff.createDiv({ cls: 'heading-item' })
             }
-            setIcon(HeaderItem, CMD_CONFIG[cmd].icon);
+            const IconDiv = HeaderItem.createDiv({ cls: 'heading-item-icon' })
+            setIcon(IconDiv, CMD_CONFIG[cmd].icon);
             new Setting(HeaderItem)
                 .setName(CMD_CONFIG[cmd].title)
                 .addToggle((component) =>

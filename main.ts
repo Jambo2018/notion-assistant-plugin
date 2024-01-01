@@ -20,7 +20,8 @@ export default class TypingAsstPlugin extends Plugin {
 	scrollArea?: Element;
 	settings: ExamplePluginSettings;
 	async loadSettings() {
-		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: HEADING_MENU }, await this.loadData());
+		const initialMenu = HEADING_MENU.filter(item => item === 'insert-note-callout' || !item.includes("callout"));
+		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: initialMenu }, await this.loadData());
 		// console.log('commands======>', this.app.commands.commands)
 	}
 
@@ -201,7 +202,7 @@ export default class TypingAsstPlugin extends Plugin {
 			this.commands = new CommandMenu({
 				scrollArea,
 				onMenu: onMenuClick,
-				cmds:this.settings.cmdsSorting
+				cmds: this.settings.cmdsSorting
 			});
 
 			this.btns?.remove();

@@ -270,7 +270,14 @@
 		border-top: none;
 	}
 }
-.heading-item path {
-	fill: var(--color-base-100);
-	stroke: var(--color-base-100);
+
+
+.heading-item-icon{
+	display: flex;
+	align-items: center;
+	margin-right: 12px;
+	padding: 8px;
+	background-color: #f6f6f6;
+	border-radius: 3px;
+	box-shadow: var(--shadow-s);
 }
