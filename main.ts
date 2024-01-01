@@ -121,9 +121,9 @@ export default class TypingAsstPlugin extends Plugin {
 				for (const cmd in CONTENT_MAP) {
 					if (cmd === "text") {
 						continue;
-					} else if (/^\> \[!/.test(lineContent)) {
-						lineStyle = TEXT_MAP["callout"];
-						break;
+					// } else if (/^\> \[!/.test(lineContent)) {
+					// 	lineStyle = TEXT_MAP["callout"];
+					// 	break;
 					} else if (/^\`\`\`/.test(lineContent)) {
 						lineStyle = TEXT_MAP["code"];
 						break;
