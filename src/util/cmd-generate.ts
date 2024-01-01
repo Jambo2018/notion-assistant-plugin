@@ -156,84 +156,84 @@ export function loadCommands() {
 	this.addCommand({
 		id: "insert-note-callout",
 		name: "Insert Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["noteCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-abstract-callout",
 		name: "Insert Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["abstractCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-info-callout",
 		name: "Insert Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["infoCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-todo-callout",
 		name: "Insert Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["todoCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-tip-callout",
 		name: "Insert Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["tipCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-success-callout",
 		name: "Success Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["successCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-question-callout",
 		name: "Question Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["questionCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-warning-callout",
 		name: "Warning Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["warningCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-failure-callout",
 		name: "Failure Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["failureCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-danger-callout",
 		name: "Danger Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["dangerCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-bug-callout",
 		name: "Bug Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["bugCallout"]);
 		}
 	});
 	this.addCommand({
 		id: "insert-example-callout",
 		name: "Example Callout",
-		editorCallback: (editor) => {
+		editorCallback: (editor: Editor) => {
 			generateCommand(CONTENT_MAP["exampleCallout"]);
 		}
 	});
