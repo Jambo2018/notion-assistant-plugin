@@ -21,7 +21,7 @@ export default class TypingAsstPlugin extends Plugin {
 	settings: ExamplePluginSettings;
 	async loadSettings() {
 		const initialMenu = HEADING_MENU.filter(item => item === 'insert-note-callout' || !item.includes("callout"));
-		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: initialMenu }, await this.loadData());
+		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: initialMenu, disableSelectionMenu: false }, await this.loadData());
 		// console.log('commands======>', this.app.commands.commands)
 	}
 
@@ -108,6 +108,7 @@ export default class TypingAsstPlugin extends Plugin {
 		};
 
 		const handleSelection = () => {
+			if(this.settings.disableSelectionMenu)return;
 			const selection = document.getSelection()?.toString();
 			if (selection) {
 				const view =
@@ -121,9 +122,9 @@ export default class TypingAsstPlugin extends Plugin {
 				for (const cmd in CONTENT_MAP) {
 					if (cmd === "text") {
 						continue;
-					// } else if (/^\> \[!/.test(lineContent)) {
-					// 	lineStyle = TEXT_MAP["callout"];
-					// 	break;
+						// } else if (/^\> \[!/.test(lineContent)) {
+						// 	lineStyle = TEXT_MAP["callout"];
+						// 	break;
 					} else if (/^\`\`\`/.test(lineContent)) {
 						lineStyle = TEXT_MAP["code"];
 						break;

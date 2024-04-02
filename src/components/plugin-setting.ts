@@ -7,6 +7,7 @@ import { CMD_CONFIG, HEADING_MENU } from "src/constants";
 export type CMD_TYPE = (typeof HEADING_MENU)[number]
 export interface ExamplePluginSettings {
     showPlaceholder: boolean;
+    disableSelectionMenu: boolean;
     cmdsSorting: CMD_TYPE[]
 }
 export class ExampleSettingTab extends PluginSettingTab {
@@ -38,6 +39,18 @@ export class ExampleSettingTab extends PluginSettingTab {
                     .setValue(this.plugin.settings.showPlaceholder)
                     .onChange(async (value) => {
                         this.plugin.settings.showPlaceholder = value;
+                        await this.plugin.saveSettings();
+                    })
+            );
+
+        new Setting(containerEl)
+            .setName("Selection Menu")
+            .setDesc("Display shortcut options after selecting text")
+            .addToggle((component) =>
+                component
+                    .setValue(!this.plugin.settings.disableSelectionMenu)
+                    .onChange(async (value) => {
+                        this.plugin.settings.disableSelectionMenu = !value;
                         await this.plugin.saveSettings();
                     })
             );
