@@ -19,6 +19,7 @@ export default class TypingAsstPlugin extends Plugin {
 	linkModal: InsertLinkModal;
 	scrollArea?: Element;
 	settings: ExamplePluginSettings;
+
 	async loadSettings() {
 		const initialMenu = HEADING_MENU.filter(item => item === 'insert-note-callout' || !item.includes("callout"));
 		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: initialMenu }, await this.loadData());
@@ -121,9 +122,9 @@ export default class TypingAsstPlugin extends Plugin {
 				for (const cmd in CONTENT_MAP) {
 					if (cmd === "text") {
 						continue;
-					// } else if (/^\> \[!/.test(lineContent)) {
-					// 	lineStyle = TEXT_MAP["callout"];
-					// 	break;
+						// } else if (/^\> \[!/.test(lineContent)) {
+						// 	lineStyle = TEXT_MAP["callout"];
+						// 	break;
 					} else if (/^\`\`\`/.test(lineContent)) {
 						lineStyle = TEXT_MAP["code"];
 						break;
@@ -156,6 +157,14 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 
 		this.registerDomEvent(document, "keydown", (evt: KeyboardEvent) => {
+			const view =
+				this.app.workspace.getActiveViewOfType(MarkdownView);
+			if (view) {
+				view.editor.focus();
+			}
+		})
+
+		this.registerDomEvent(document, "keyup", (evt: KeyboardEvent) => {
 			renderEmptyText();
 			if (this.commands?.isVisible()) {
 				const { key } = evt;
@@ -165,10 +174,13 @@ export default class TypingAsstPlugin extends Plugin {
 					key !== "ArrowLeft" &&
 					key !== "ArrowRight"
 				) {
-					this.commands.hide();
 					const view =
 						this.app.workspace.getActiveViewOfType(MarkdownView);
 					if (view) {
+						const cursor = view.editor.getCursor();
+						const editLine = view.editor.getLine(cursor.line);
+						const _cmd = (editLine?.match(/[^\/]*$/)?.[0] || '')
+						this.commands?.search(_cmd);
 						view.editor.focus();
 					}
 				}
@@ -202,7 +214,7 @@ export default class TypingAsstPlugin extends Plugin {
 			this.commands = new CommandMenu({
 				scrollArea,
 				onMenu: onMenuClick,
-				cmds: this.settings.cmdsSorting
+				defaultCmds: this.settings.cmdsSorting
 			});
 
 			this.btns?.remove();
@@ -233,7 +245,7 @@ export default class TypingAsstPlugin extends Plugin {
 				if (editLine.replace(/[\s]*$/, "").length <= cursor.ch) {
 					this.commands?.display();
 				} else {
-					this.commands?.hide();
+					// this.commands?.hide();
 				}
 			}
 		});

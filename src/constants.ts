@@ -415,6 +415,15 @@ export const CMD_CONFIG = {
 	},
 } as const;
 
+const config2Arr = (conf: any) => {
+	const arr = []
+	for (const key in conf) {
+		arr.push({ cmd: key, title: conf[key].title })
+	}
+	return arr
+}
+export let CMD_CONFIG_ARR = config2Arr(CMD_CONFIG)
+
 export const CODE_LAN = "link-bookmark";
 export const MENU_WIDTH = 300;
 export const MAX_MENU_HEIGHT = 400;
