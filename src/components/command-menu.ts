@@ -20,7 +20,7 @@ export class CommandMenu {
 	mouseMoved: boolean;
 	menuHieght: number;
 	defaultCmds: CMD_TYPE[]
-	callback:(cmd:string)=>void;
+	callback: (cmd: string) => void;
 	constructor(props: {
 		scrollArea?: Element;
 		onMenu: (content: string) => void;
@@ -28,10 +28,10 @@ export class CommandMenu {
 	}) {
 		this.menu = createDiv({ cls: "command", attr: { id: "command-menu" } });
 		this.mouseMoved = false;
-		this.defaultCmds=props.defaultCmds;
+		this.defaultCmds = props.defaultCmds;
 		this.scrollArea = props.scrollArea as HTMLDivElement;
 		this.menuHieght = Math.min(COMMAD_ITEM_EIGHT * props.defaultCmds.length, MAX_MENU_HEIGHT)
-		this.callback=props.onMenu;
+		this.callback = props.onMenu;
 		this.scrollArea.appendChild(this.menu);
 		this.hide();
 	}
@@ -69,10 +69,10 @@ export class CommandMenu {
 	};
 
 	search = function (str: string) {
-		let _cmds=[]
-		if(!str){
-			_cmds=this.defaultCmds;
-		}else{
+		let _cmds = []
+		if (!str) {
+			_cmds = this.defaultCmds;
+		} else {
 			_cmds = fuzzy.filter(str || '', CMD_CONFIG_ARR, { extract: (e: any) => e.title }).map((e: any) => e.original.cmd).filter((e: any) => HEADING_MENU.includes(e))
 		}
 		this.generateMenu(_cmds)
@@ -109,10 +109,10 @@ export class CommandMenu {
 			this.menu.children?.[0]?.focus?.()
 		}, 50);
 
-		this.menu.onmousemove = function (e) {
+		this.menu.onmousemove = function () {
 			_this.mouseMoved = true;
 		};
-		this.menu.onkeydown = function (e) {
+		this.menu.onkeydown = function (e: any) {
 			const { key } = e;
 			if (
 				key === "ArrowUp" ||
