@@ -15,6 +15,9 @@
 	--bookmark-title: rgba(255, 255, 255, 0.81);
 	--bookmark-subtitle: rgba(255, 255, 255, 0.443);
 }
+:root {
+	--show-empty-prompt: none;
+}
 
 .command {
 	position: absolute;
@@ -212,13 +215,14 @@
 }
 
 .cm-active:has(br)::before {
+	display: var(--show-empty-prompt);
 	position: absolute;
 	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 3px;
 	color: var(--empty-prompt);
-	content: attr(promote-text);
+	content: "💡Please input ‘ / ’ for more commands...";
 }
 
 .link-input input {
@@ -271,8 +275,7 @@
 	}
 }
 
-
-.heading-item-icon{
+.heading-item-icon {
 	display: flex;
 	align-items: center;
 	margin-right: 12px;

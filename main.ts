@@ -170,7 +170,6 @@ export default class TypingAsstPlugin extends Plugin {
 		})
 
 		this.registerDomEvent(document, "keyup", (evt: KeyboardEvent) => {
-			renderEmptyText();
 			if (this.commands?.isVisible()) {
 				const { key } = evt;
 				if (
@@ -199,9 +198,9 @@ export default class TypingAsstPlugin extends Plugin {
 		// };
 
 		const renderPlugin = () => {
-			// if (this.scrollArea) {
-			// 	this.scrollArea.removeEventListener("scroll", scrollEvent);
-			// }
+
+			document.documentElement.style.setProperty('--show-empty-prompt','block')
+
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (!view) return;
 			this.scrollArea =
@@ -253,25 +252,6 @@ export default class TypingAsstPlugin extends Plugin {
 					// this.commands?.hide();
 				}
 			}
-		});
-
-		const renderEmptyText = () => {
-			if (!this.settings.showPlaceholder) return;
-			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-			if (!view) return;
-			setTimeout(() => {
-				const activeEle = view.containerEl.querySelector(".cm-active");
-				activeEle?.setAttribute(
-					"promote-text",
-					"💡Please input ‘ / ’ for more commands..."
-				);
-			}, 50);
-		};
-		this.registerDomEvent(document, "pointermove", () => {
-			renderEmptyText();
-		});
-		this.registerDomEvent(document, "click", () => {
-			renderEmptyText();
 		});
 
 		this.registerMarkdownCodeBlockProcessor(CODE_LAN, (source, el, ctx) => {
