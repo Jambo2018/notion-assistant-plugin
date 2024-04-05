@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin } from "obsidian";
+import { MarkdownView, Plugin, Platform } from "obsidian";
 import { CommandMenu } from "src/components/command-menu";
 import {
 	CMD_CONFIG,
@@ -13,6 +13,7 @@ import { SelectionBtns } from "src/components/selection-menu";
 import { type ExamplePluginSettings, ExampleSettingTab, CMD_TYPE } from "src/components/plugin-setting";
 import { linkParse, loadIcons, loadCommands, generateBookMark } from "src/util/util";
 
+const { isMobile } = Platform;
 export default class TypingAsstPlugin extends Plugin {
 	commands: CommandMenu;
 	btns: SelectionBtns;
@@ -153,6 +154,10 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 
 		this.registerDomEvent(document, "mouseup", (evt: MouseEvent) => {
+			// prevent title selection
+			if ((evt?.target as any)?.getAttribute?.('class')?.includes('inline-title')) return;
+			// desable seletion menu in mobile env 
+			if (isMobile) return;
 			handleSelection();
 		});
 
@@ -187,16 +192,16 @@ export default class TypingAsstPlugin extends Plugin {
 			}
 			this.btns?.hide();
 		});
-		const scrollEvent = () => {
-			if (this.btns?.isVisible()) {
-				// handleSelection();
-			}
-		};
+		// const scrollEvent = () => {
+		// 	if (this.btns?.isVisible()) {
+		// 		// handleSelection();
+		// 	}
+		// };
 
 		const renderPlugin = () => {
-			if (this.scrollArea) {
-				this.scrollArea.removeEventListener("scroll", scrollEvent);
-			}
+			// if (this.scrollArea) {
+			// 	this.scrollArea.removeEventListener("scroll", scrollEvent);
+			// }
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (!view) return;
 			this.scrollArea =
@@ -224,7 +229,7 @@ export default class TypingAsstPlugin extends Plugin {
 				onAction: onSelectionAction,
 			});
 
-			scrollArea?.addEventListener("scroll", scrollEvent);
+			// scrollArea?.addEventListener("scroll", scrollEvent);
 		};
 
 		/**Ensure that the plugin can be loaded and used immediately after it is turned on */
