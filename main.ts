@@ -184,7 +184,11 @@ export default class TypingAsstPlugin extends Plugin {
 						const cursor = view.editor.getCursor();
 						const editLine = view.editor.getLine(cursor.line);
 						const _cmd = (editLine?.match(/[^\/]*$/)?.[0] || '')
-						this.commands?.search(_cmd);
+						if(!editLine){
+							this.commands?.hide();
+						}else{
+							this.commands?.search(_cmd);
+						}
 						view.editor.focus();
 					}
 				}
