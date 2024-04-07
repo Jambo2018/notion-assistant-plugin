@@ -155,18 +155,19 @@ export default class TypingAsstPlugin extends Plugin {
 
 		this.registerDomEvent(document, "mouseup", (evt: MouseEvent) => {
 			// prevent title selection
-			if ((evt?.target as any)?.getAttribute?.('class')?.includes('inline-title')) return;
+			if (!(evt?.target as any)?.getAttribute?.('class')?.includes('cm-active')) return;
 			// desable seletion menu in mobile env 
 			if (isMobile) return;
 			handleSelection();
 		});
 
 		this.registerDomEvent(document, "keydown", (evt: KeyboardEvent) => {
-			if ((evt?.target as any)?.getAttribute?.('class')?.includes('inline-title')) return;
-			const view =
-				this.app.workspace.getActiveViewOfType(MarkdownView);
-			if (view) {
-				view.editor.focus();
+			if ((evt?.target as any)?.getAttribute?.('class')?.includes('command-option')) {
+				const view =
+					this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (view) {
+					view.editor.focus();
+				}
 			}
 		})
 
