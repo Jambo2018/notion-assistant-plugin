@@ -162,6 +162,7 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 
 		this.registerDomEvent(document, "keydown", (evt: KeyboardEvent) => {
+			if ((evt?.target as any)?.getAttribute?.('class')?.includes('inline-title')) return;
 			const view =
 				this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
@@ -184,9 +185,9 @@ export default class TypingAsstPlugin extends Plugin {
 						const cursor = view.editor.getCursor();
 						const editLine = view.editor.getLine(cursor.line);
 						const _cmd = (editLine?.match(/[^\/]*$/)?.[0] || '')
-						if(!editLine){
+						if (!editLine) {
 							this.commands?.hide();
-						}else{
+						} else {
 							this.commands?.search(_cmd);
 						}
 						view.editor.focus();
@@ -203,7 +204,7 @@ export default class TypingAsstPlugin extends Plugin {
 
 		const renderPlugin = () => {
 
-			document.documentElement.style.setProperty('--show-empty-prompt','block')
+			document.documentElement.style.setProperty('--show-empty-prompt', 'block')
 
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (!view) return;

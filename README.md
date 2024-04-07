@@ -20,6 +20,7 @@ https://github.com/alisahanyalcin/Typing-Assistant/assets/34830846/0994312e-ab97
 - The menu actively follows the cursor position of writing
 - Support input link address to generate personalized card
 - Supports custom command combinations and drag-and-drop sorting
+- Support quick search of commands
 
 ## Installation
 - Open Settings > Third-Party Add-ons
