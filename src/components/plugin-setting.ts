@@ -16,6 +16,7 @@ export class ExampleSettingTab extends PluginSettingTab {
     constructor(app: App, plugin: TypingAsstPlugin) {
         super(app, plugin);
         this.plugin = plugin;
+        this.hasChanged = false;
     }
 
     display(): void {
@@ -37,6 +38,7 @@ export class ExampleSettingTab extends PluginSettingTab {
                 component
                     .setValue(this.plugin.settings.showPlaceholder)
                     .onChange(async (value) => {
+                        this.hasChanged = true;
                         this.plugin.settings.showPlaceholder = value;
                         await this.plugin.saveSettings();
                     })

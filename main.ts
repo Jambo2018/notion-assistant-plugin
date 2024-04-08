@@ -204,8 +204,8 @@ export default class TypingAsstPlugin extends Plugin {
 		// };
 
 		const renderPlugin = () => {
-
-			document.documentElement.style.setProperty('--show-empty-prompt', 'block')
+			const showEmptyPrompt = this.settings.showPlaceholder;
+			document.documentElement.style.setProperty('--show-empty-prompt', showEmptyPrompt ? 'block' : 'none')
 
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (!view) return;
