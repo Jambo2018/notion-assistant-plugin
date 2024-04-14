@@ -214,7 +214,7 @@
 	height: 15px;
 }
 
-.cm-active:has(br)::before {
+.cm-active:has(br):not(.HyperMD-codeblock)::before {
 	display: var(--show-empty-prompt);
 	position: absolute;
 	top: 0;

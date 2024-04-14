@@ -107,7 +107,7 @@ export class CommandMenu {
 		});
 		setTimeout(() => {
 			this.menu.children?.[0]?.focus?.()
-		}, 50);
+		});
 
 		this.menu.onmousemove = function () {
 			_this.mouseMoved = true;

@@ -11,7 +11,7 @@ import {
 import { InsertLinkModal } from "src/components/link-input-modal";
 import { SelectionBtns } from "src/components/selection-menu";
 import { type ExamplePluginSettings, ExampleSettingTab, CMD_TYPE } from "src/components/plugin-setting";
-import { linkParse, loadIcons, loadCommands, generateBookMark } from "src/util/util";
+import { linkParse, loadIcons, loadCommands, generateBookMark, isLineEdit, isLineSelect } from "src/util/util";
 
 const { isMobile } = Platform;
 export default class TypingAsstPlugin extends Plugin {
@@ -154,8 +154,8 @@ export default class TypingAsstPlugin extends Plugin {
 		});
 
 		this.registerDomEvent(document, "mouseup", (evt: MouseEvent) => {
-			// prevent title selection
-			if (!(evt?.target as any)?.getAttribute?.('class')?.includes('cm-active')) return;
+			// prevent title or code selection
+			if (!isLineSelect(evt?.target)) return;
 			// desable seletion menu in mobile env 
 			if (isMobile) return;
 			handleSelection();
@@ -245,6 +245,7 @@ export default class TypingAsstPlugin extends Plugin {
 		);
 
 		this.registerDomEvent(document, "input", (evt: InputEvent) => {
+			if (!isLineEdit(evt?.target)) return;
 			if (this.linkModal.isOpen) return;
 			if (evt && evt.data === "/") {
 				const view =

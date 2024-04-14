@@ -65,3 +65,12 @@ export const loadIcons = (icons: Record<string, string>): void => {
 		addIcon(key, icons[key])
 	}
 }
+
+
+export const isLineEdit = (el: any) => {
+	return !!(el as any)?.querySelector(".cm-active:not(.HyperMD-codeblock)");
+}
+
+export const isLineSelect = (el: any) => {
+	return el.tagName === 'DIV' && el.classList.contains("cm-active") && !el.classList.contains('HyperMD-codeblock')
+}
