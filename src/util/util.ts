@@ -72,5 +72,6 @@ export const isLineEdit = (el: any) => {
 }
 
 export const isLineSelect = (el: any) => {
-	return el.tagName === 'DIV' && el.classList.contains("cm-active") && !el.classList.contains('HyperMD-codeblock')
+	const arr = Array.from(el.classList);
+	return !(arr.find(e => (e as string).endsWith('codeblock') || (e as string).endsWith('inline-title')));
 }
