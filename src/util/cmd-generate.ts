@@ -44,13 +44,16 @@ export function loadCommands() {
     const generateCommand = (content: string) => {
         const view = this.app.workspace.getActiveViewOfType(MarkdownView)
         if (view) {
+            if (content === CONTENT_MAP['bookmark']) {
+                content = ''
+            }
             const cursor = view.editor.getCursor();
             const editLine = view.editor.getLine(cursor.line);
-            const searchText=editLine.match(/[^\/]*$/)?.[0]??''
-            if (editLine.length > searchText.length+1) {
+            const searchText = editLine.match(/[^\/]*$/)?.[0] ?? ''
+            if (editLine.length > searchText.length + 1) {
                 view.editor.replaceRange(
                     `\n${content}`,
-                    { line: cursor.line, ch: cursor.ch - searchText.length-1 },
+                    { line: cursor.line, ch: cursor.ch - searchText.length - 1 },
                     cursor
                 );
                 view.editor.setCursor({
@@ -137,6 +140,13 @@ export function loadCommands() {
         name: "Insert NumberList",
         editorCallback: (editor: Editor) => {
             generateCommand(CONTENT_MAP['numberList'])
+        },
+    });
+    this.addCommand({
+        id: "insert-bookmark",
+        name: "Insert BookMark",
+        editorCallback: (editor: Editor) => {
+            generateCommand(CONTENT_MAP['bookmark'])
         },
     });
     this.addCommand({

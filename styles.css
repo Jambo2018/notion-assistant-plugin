@@ -214,6 +214,7 @@
 	height: 15px;
 }
 
+
 .cm-active:has(br):not(.HyperMD-codeblock)::before {
 	display: var(--show-empty-prompt);
 	position: absolute;
@@ -223,6 +224,11 @@
 	left: 3px;
 	color: var(--empty-prompt);
 	content: "💡Please input ‘ / ’ for more commands...";
+}
+
+
+.table-editor .cm-active:has(br)::before {
+	display: none;
 }
 
 .link-input input {

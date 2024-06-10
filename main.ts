@@ -66,14 +66,14 @@ export default class TypingAsstPlugin extends Plugin {
 		const onMenuClick = async (content: CMD_TYPE) => {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
-				if (content === "bookmark") {
+				(this.app as any).commands.executeCommandById(
+					CMD_CONFIG[content].cmd
+				);
+				view.editor.focus();
+
+				if (content === CONTENT_MAP['bookmark']) {
 					view.editor.blur();
 					this.linkModal.open();
-				} else {
-					(this.app as any).commands.executeCommandById(
-						CMD_CONFIG[content].cmd
-					);
-					view.editor.focus();
 				}
 			}
 		};
