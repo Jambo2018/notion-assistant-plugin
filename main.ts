@@ -23,7 +23,7 @@ export default class TypingAsstPlugin extends Plugin {
 
 	async loadSettings() {
 		const initialMenu = HEADING_MENU.filter(item => item === 'insert-note-callout' || !item.includes("callout"));
-		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: initialMenu }, await this.loadData());
+		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: initialMenu, disableSelectionMenu: isMobile }, await this.loadData());
 		// console.log('commands======>', this.app.commands.commands)
 	}
 
@@ -157,7 +157,8 @@ export default class TypingAsstPlugin extends Plugin {
 			// prevent title or code selection
 			if (!isLineSelect(evt?.target)) return;
 			// desable seletion menu in mobile env 
-			if (isMobile) return;
+			// if (isMobile) return;
+			if(this.settings.disableSelectionMenu)return;
 			handleSelection();
 		});
 
