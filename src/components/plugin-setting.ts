@@ -46,7 +46,7 @@ export class ExampleSettingTab extends PluginSettingTab {
             );
 
         new Setting(containerEl)
-            .setName("Selection Menu")
+            .setName("Selection Options")
             .setDesc("Display shortcut options after selecting text")
             .addToggle((component) =>
                 component
