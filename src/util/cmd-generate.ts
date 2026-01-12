@@ -41,7 +41,7 @@ export function loadCommands() {
 
 
 
-    const generateCommand = (content: string) => {
+    const replaceContent = (content: string) => {
         const view = this.app.workspace.getActiveViewOfType(MarkdownView)
         if (view) {
             if (content === CONTENT_MAP['bookmark']) {
@@ -75,7 +75,7 @@ export function loadCommands() {
         id: "insert-text",
         name: "Insert normal text",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['text'])
+            replaceContent(CONTENT_MAP['text'])
         },
     });
 
@@ -83,175 +83,184 @@ export function loadCommands() {
         id: "insert-heading1",
         name: "Insert Heading-1",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['heading1'])
+            replaceContent(CONTENT_MAP['heading1'])
         },
     });
     this.addCommand({
         id: "insert-heading2",
         name: "Insert Heading-2",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['heading2'])
+            replaceContent(CONTENT_MAP['heading2'])
         },
     });
     this.addCommand({
         id: "insert-heading3",
         name: "Insert Heading-3",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['heading3'])
+            replaceContent(CONTENT_MAP['heading3'])
         },
     });
     this.addCommand({
         id: "insert-heading4",
         name: "Insert Heading-4",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['heading4'])
+            replaceContent(CONTENT_MAP['heading4'])
         },
     });
     this.addCommand({
         id: "insert-heading5",
         name: "Insert Heading-5",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['heading5'])
+            replaceContent(CONTENT_MAP['heading5'])
         },
     });
     this.addCommand({
         id: "insert-heading6",
         name: "Insert Heading-6",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['heading6'])
+            replaceContent(CONTENT_MAP['heading6'])
         },
     });
     this.addCommand({
         id: "insert-todo",
         name: "Insert TodoList",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['todoList'])
+            replaceContent(CONTENT_MAP['todoList'])
         },
     });
     this.addCommand({
         id: "insert-bulletList",
         name: "Insert BulletList",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['bulletList'])
+            replaceContent(CONTENT_MAP['bulletList'])
         },
     });
     this.addCommand({
         id: "insert-numberList",
         name: "Insert NumberList",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['numberList'])
+            replaceContent(CONTENT_MAP['numberList'])
+        },
+    });
+    this.addCommand({
+        id: "insert-table",
+        name: "Insert Table",
+        editorCallback: (editor: Editor) => {
+            replaceContent('')
+            this.app.commands.executeCommandById('editor:insert-table')
+
         },
     });
     this.addCommand({
         id: "insert-bookmark",
         name: "Insert BookMark",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['bookmark'])
+            replaceContent(CONTENT_MAP['bookmark'])
         },
     });
     this.addCommand({
         id: "insert-divide",
         name: "Insert Divide",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['divide'])
+            replaceContent(CONTENT_MAP['divide'])
         },
     });
     this.addCommand({
         id: "insert-quote",
         name: "Insert Quote",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['quote'])
+            replaceContent(CONTENT_MAP['quote'])
         },
     });
     this.addCommand({
         id: "insert-note-callout",
         name: "Insert Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["noteCallout"]);
+            replaceContent(CONTENT_MAP["noteCallout"]);
         }
     });
     this.addCommand({
         id: "insert-abstract-callout",
         name: "Insert Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["abstractCallout"]);
+            replaceContent(CONTENT_MAP["abstractCallout"]);
         }
     });
     this.addCommand({
         id: "insert-info-callout",
         name: "Insert Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["infoCallout"]);
+            replaceContent(CONTENT_MAP["infoCallout"]);
         }
     });
     this.addCommand({
         id: "insert-todo-callout",
         name: "Insert Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["todoCallout"]);
+            replaceContent(CONTENT_MAP["todoCallout"]);
         }
     });
     this.addCommand({
         id: "insert-tip-callout",
         name: "Insert Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["tipCallout"]);
+            replaceContent(CONTENT_MAP["tipCallout"]);
         }
     });
     this.addCommand({
         id: "insert-success-callout",
         name: "Success Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["successCallout"]);
+            replaceContent(CONTENT_MAP["successCallout"]);
         }
     });
     this.addCommand({
         id: "insert-question-callout",
         name: "Question Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["questionCallout"]);
+            replaceContent(CONTENT_MAP["questionCallout"]);
         }
     });
     this.addCommand({
         id: "insert-warning-callout",
         name: "Warning Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["warningCallout"]);
+            replaceContent(CONTENT_MAP["warningCallout"]);
         }
     });
     this.addCommand({
         id: "insert-failure-callout",
         name: "Failure Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["failureCallout"]);
+            replaceContent(CONTENT_MAP["failureCallout"]);
         }
     });
     this.addCommand({
         id: "insert-danger-callout",
         name: "Danger Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["dangerCallout"]);
+            replaceContent(CONTENT_MAP["dangerCallout"]);
         }
     });
     this.addCommand({
         id: "insert-bug-callout",
         name: "Bug Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["bugCallout"]);
+            replaceContent(CONTENT_MAP["bugCallout"]);
         }
     });
     this.addCommand({
         id: "insert-example-callout",
         name: "Example Callout",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP["exampleCallout"]);
+            replaceContent(CONTENT_MAP["exampleCallout"]);
         }
     });
     this.addCommand({
         id: "insert-mathblock",
         name: "Insert Math Block",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['math'])
+            replaceContent(CONTENT_MAP['math'])
             CONTENT_MAP['code']
             const view = this.app.workspace.getActiveViewOfType(MarkdownView)
             if (view) {
@@ -266,7 +275,7 @@ export function loadCommands() {
         id: "insert-codeblock",
         name: "Insert Math Block",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['code'])
+            replaceContent(CONTENT_MAP['code'])
             const view = this.app.workspace.getActiveViewOfType(MarkdownView)
             if (view) {
                 const cursor = view.editor.getCursor();
@@ -299,7 +308,7 @@ export function loadCommands() {
         id: "insert-embed",
         name: "Insert Embed",
         editorCallback: (editor: Editor) => {
-            generateCommand(CONTENT_MAP['embed'])
+            replaceContent(CONTENT_MAP['embed'])
             const view = this.app.workspace.getActiveViewOfType(MarkdownView)
             if (view) {
                 const cursor = view.editor.getCursor();

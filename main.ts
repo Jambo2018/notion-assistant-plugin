@@ -24,7 +24,9 @@ export default class TypingAsstPlugin extends Plugin {
 	async loadSettings() {
 		const initialMenu = HEADING_MENU.filter(item => item === 'insert-note-callout' || !item.includes("callout"));
 		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: initialMenu, disableSelectionMenu: isMobile }, await this.loadData());
-		// console.log('commands======>', this.app.commands.commands)
+		if (process.env.NODE_ENV === 'development') {
+			console.log('commands======>', (this as any).app.commands)
+		}
 	}
 
 	async saveSettings() {

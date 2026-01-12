@@ -117,7 +117,8 @@ export const CONTENT_MAP = {
 	numberList: "1. ",
 	divide: "***\n",
 	code: "```\n\n```",
-	bookmark:'bookmark',
+	bookmark: 'bookmark',
+	table: 'table',
 };
 
 export const HEADING_MENU = [
@@ -424,7 +425,7 @@ export const CMD_CONFIG = {
 	'insert-table': {
 		title: 'Table',
 		icon: 'table',
-		cmd: "editor:insert-table",
+		cmd: "typing-assistant:insert-table",
 	},
 } as const;
 
