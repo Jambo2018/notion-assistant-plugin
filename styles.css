@@ -25,7 +25,7 @@
 	width: 240px;
 	max-height: 400px;
 	overflow-y: auto;
-	background-color: var(--color-base-20);
+	background-color: var(--background-primary);
 	border-radius: 5px;
 	box-shadow: var(--box-shadow);
 	transform: 0 top;
@@ -42,7 +42,7 @@
 	padding: 6px 12px;
 }
 .command-option:focus {
-	background-color: var(--color-base-40);
+	background-color: var(--nav-item-background-active);
 }
 .command-option div {
 	display: flex;
@@ -134,7 +134,7 @@
 	max-width: 100%;
 	height: 32px;
 	overflow: hidden;
-	background-color: var(--color-base-20);
+	background-color: var(--background-primary);
 	border-radius: 5px;
 	box-shadow: var(--box-shadow);
 }
@@ -149,16 +149,16 @@
 }
 
 .selection-btn:hover {
-	background-color: var(--color-base-40);
+	background-color: var(--nav-item-background-active);
 }
 .selection-btn:active {
-	background-color: var(--color-base-40);
+	background-color: var(--nav-item-background-active);
 }
 
 .selection-btn:first-child {
 	padding: 0 10px;
 	font-size: 14px;
-	border-right: 1px solid var(--color-base-40);
+	border-right: 1px solid var(--nav-item-background-active);
 }
 .selection-btn:first-child::after {
 	width: 15px;
@@ -183,7 +183,7 @@
 	position: absolute;
 	left: 0;
 	overflow: hidden;
-	background-color: var(--color-base-20);
+	background-color: var(--background-primary);
 	border-radius: 5px;
 	box-shadow: var(--box-shadow);
 }
@@ -195,10 +195,10 @@
 	cursor: pointer;
 }
 .linemenu-option:hover {
-	background-color: var(--color-base-40);
+	background-color: var(--nav-item-background-active);
 }
 .linemenu-option:active {
-	background-color: var(--color-base-40);
+	background-color: var(--nav-item-background-active);
 }
 .linemenu-option div {
 	display: flex;
@@ -214,7 +214,6 @@
 	height: 15px;
 }
 
-
 .cm-active:has(br):not(.HyperMD-codeblock)::before {
 	display: var(--show-empty-prompt);
 	position: absolute;
@@ -225,7 +224,6 @@
 	color: var(--empty-prompt);
 	content: "💡Please input ‘ / ’ for more commands...";
 }
-
 
 .table-editor .cm-active:has(br)::before {
 	display: none;
