@@ -257,6 +257,13 @@ export function loadCommands() {
         }
     });
     this.addCommand({
+        id: "insert-quote-callout",
+        name: "Quote Callout",
+        editorCallback: (editor: Editor) => {
+            replaceContent(CONTENT_MAP["quoteCallout"]);
+        }
+    });
+    this.addCommand({
         id: "insert-mathblock",
         name: "Insert Math Block",
         editorCallback: (editor: Editor) => {
