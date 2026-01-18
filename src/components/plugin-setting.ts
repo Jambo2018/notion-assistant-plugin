@@ -6,6 +6,7 @@ import { CMD_CONFIG, HEADING_MENU } from "src/constants";
 
 export type CMD_TYPE = (typeof HEADING_MENU)[number]
 export interface ExamplePluginSettings {
+    nonEmptyLineDisabled: boolean;
     showPlaceholder: boolean;
     disableSelectionMenu: boolean;
     cmdsSorting: CMD_TYPE[]
@@ -31,6 +32,19 @@ export class ExampleSettingTab extends PluginSettingTab {
             text: "contact me",
             href: "https://github.com/Jambo2018/notion-assistant-plugin",
         });
+
+        new Setting(containerEl)
+            .setName("Non-empty Line Disabled")
+            .setDesc("The shortcut key `/` is only recognized at the first character of a blank line, ignoring lines of text in the input.")
+            .addToggle((component) =>
+                component
+                    .setValue(this.plugin.settings.nonEmptyLineDisabled)
+                    .onChange(async (value) => {
+                        this.hasChanged = true;
+                        this.plugin.settings.nonEmptyLineDisabled = value;
+                        await this.plugin.saveSettings();
+                    })
+            );
 
         new Setting(containerEl)
             .setName("Typing Placeholder")

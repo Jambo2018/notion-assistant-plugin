@@ -23,7 +23,7 @@ export default class TypingAsstPlugin extends Plugin {
 
 	async loadSettings() {
 		const initialMenu = HEADING_MENU.filter(item => item === 'insert-note-callout' || !item.includes("callout"));
-		this.settings = Object.assign({}, { showPlaceholder: true, cmdsSorting: initialMenu, disableSelectionMenu: isMobile }, await this.loadData());
+		this.settings = Object.assign({}, { nonEmptyLineDisabled: false, showPlaceholder: true, cmdsSorting: initialMenu, disableSelectionMenu: isMobile }, await this.loadData());
 		if (process.env.NODE_ENV === 'development') {
 			console.log('commands======>', (this as any).app.commands)
 		}
@@ -160,7 +160,7 @@ export default class TypingAsstPlugin extends Plugin {
 			if (!isLineSelect(evt?.target)) return;
 			// desable seletion menu in mobile env 
 			// if (isMobile) return;
-			if(this.settings.disableSelectionMenu)return;
+			if (this.settings.disableSelectionMenu) return;
 			handleSelection();
 		});
 
@@ -256,7 +256,8 @@ export default class TypingAsstPlugin extends Plugin {
 				if (!view) return;
 				const cursor = view.editor.getCursor();
 				const editLine = view.editor.getLine(cursor.line);
-				if (editLine.replace(/[\s]*$/, "").length <= cursor.ch) {
+				const nonEmptyLineDisabled = this.settings.nonEmptyLineDisabled;
+				if (editLine.replace(/[\s]*$/, "").length <= cursor.ch && (!nonEmptyLineDisabled || editLine.replace(/[\s]/g, '').length === 0)) {
 					this.commands?.display();
 				} else {
 					// this.commands?.hide();
