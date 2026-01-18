@@ -175,13 +175,18 @@ export default class TypingAsstPlugin extends Plugin {
 		})
 
 		this.registerDomEvent(document, "keyup", (evt: KeyboardEvent) => {
+			const { key } = evt;
+
+			// 监听 ESC 键
+			if (key === "Escape") {
+				this.commands?.hide();
+				this.btns?.hide();
+				return;
+			}
+
 			if (this.commands?.isVisible()) {
-				const { key } = evt;
 				if (
-					key !== "ArrowUp" &&
-					key !== "ArrowDown" &&
-					key !== "ArrowLeft" &&
-					key !== "ArrowRight"
+					!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(key)
 				) {
 					const view =
 						this.app.workspace.getActiveViewOfType(MarkdownView);
