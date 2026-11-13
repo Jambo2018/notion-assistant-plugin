@@ -23,7 +23,16 @@ export default class TypingAsstPlugin extends Plugin {
 
 	async loadSettings() {
 		const initialMenu = HEADING_MENU.filter(item => item === 'insert-note-callout' || !item.includes("callout"));
-		this.settings = Object.assign({}, { nonEmptyLineDisabled: false, showPlaceholder: true, cmdsSorting: initialMenu, disableSelectionMenu: isMobile }, await this.loadData());
+		const initialDisabledMenu = HEADING_MENU.filter(item => !initialMenu.includes(item));
+		this.settings = Object.assign({}, { nonEmptyLineDisabled: false, showPlaceholder: true, cmdsSorting: initialMenu, disabledCmdsSorting: initialDisabledMenu, disableSelectionMenu: isMobile }, await this.loadData());
+		const enabledSet = new Set(this.settings.cmdsSorting);
+		const existingDisabled = (this.settings.disabledCmdsSorting || []).filter(
+			(cmd) => HEADING_MENU.includes(cmd) && !enabledSet.has(cmd)
+		);
+		const remainingDisabled = HEADING_MENU.filter(
+			(cmd) => !enabledSet.has(cmd) && !existingDisabled.includes(cmd)
+		);
+		this.settings.disabledCmdsSorting = [...existingDisabled, ...remainingDisabled];
 		if (process.env.NODE_ENV === 'development') {
 			console.log('commands======>', (this as any).app.commands)
 		}
@@ -232,7 +241,11 @@ export default class TypingAsstPlugin extends Plugin {
 			this.commands = new CommandMenu({
 				scrollArea,
 				onMenu: onMenuClick,
-				defaultCmds: this.settings.cmdsSorting
+				defaultCmds: this.settings.cmdsSorting,
+				allCmds: [
+					...this.settings.cmdsSorting,
+					...this.settings.disabledCmdsSorting,
+				],
 			});
 
 			this.btns?.remove();
