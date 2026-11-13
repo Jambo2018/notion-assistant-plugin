@@ -1,7 +1,6 @@
 import { setIcon } from "obsidian";
 import {
 	CMD_CONFIG,
-	CMD_CONFIG_ARR,
 	COMMAD_ITEM_EIGHT,
 	HEADING_MENU,
 	MAX_MENU_HEIGHT,
@@ -19,16 +18,19 @@ export class CommandMenu {
 	scrollArea?: HTMLDivElement;
 	mouseMoved: boolean;
 	menuHieght: number;
-	defaultCmds: CMD_TYPE[]
+	defaultCmds: CMD_TYPE[];
+	allCmds: CMD_TYPE[];
 	callback: (cmd: string) => void;
 	constructor(props: {
 		scrollArea?: Element;
 		onMenu: (content: string) => void;
-		defaultCmds: CMD_TYPE[]
+		defaultCmds: CMD_TYPE[];
+		allCmds?: CMD_TYPE[];
 	}) {
 		this.menu = createDiv({ cls: "command", attr: { id: "command-menu" } });
 		this.mouseMoved = false;
 		this.defaultCmds = props.defaultCmds;
+		this.allCmds = props.allCmds ?? [...new Set([...props.defaultCmds, ...HEADING_MENU])];
 		this.scrollArea = props.scrollArea as HTMLDivElement;
 		this.menuHieght = Math.min(COMMAD_ITEM_EIGHT * props.defaultCmds.length, MAX_MENU_HEIGHT)
 		this.callback = props.onMenu;
@@ -69,11 +71,13 @@ export class CommandMenu {
 	};
 
 	search = function (str: string) {
-		let _cmds = []
+		let _cmds: CMD_TYPE[] = []
 		if (!str) {
 			_cmds = this.defaultCmds;
 		} else {
-			_cmds = fuzzy.filter(str || '', CMD_CONFIG_ARR, { extract: (e: any) => e.title }).map((e: any) => e.original.cmd).filter((e: any) => HEADING_MENU.includes(e))
+			_cmds = this.allCmds.filter((cmd: CMD_TYPE) =>
+				fuzzy.test(str, CMD_CONFIG[cmd].title)
+			);
 		}
 		this.generateMenu(_cmds)
 	}
