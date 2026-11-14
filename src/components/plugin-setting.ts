@@ -1,8 +1,9 @@
 // import ExamplePlugin from "./main";
 import TypingAsstPlugin from "main";
-import { App, PluginSettingTab, Setting, setIcon } from "obsidian";
+import { App, PluginSettingTab, Setting, ToggleComponent, setIcon } from "obsidian";
 import Sortable from "sortablejs";
 import { CMD_CONFIG, HEADING_MENU } from "src/constants";
+import { normalizeCommandOrder } from "src/command-order";
 
 export type CMD_TYPE = (typeof HEADING_MENU)[number]
 export interface ExamplePluginSettings {
@@ -11,6 +12,7 @@ export interface ExamplePluginSettings {
     disableSelectionMenu: boolean;
     cmdsSorting: CMD_TYPE[];
     disabledCmdsSorting: CMD_TYPE[];
+    commandOrder: CMD_TYPE[];
 }
 export class ExampleSettingTab extends PluginSettingTab {
     plugin: TypingAsstPlugin;
@@ -75,30 +77,13 @@ export class ExampleSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName("Commands Menu")
-            .setDesc("Supports custom command combinations and drag-and-drop sorting; please ensure that at least 5 commands are open")
+            .setDesc("Drag any command to set its order in the menu and search results. Toggles only control visibility in the initial `/` menu; hidden commands remain searchable and usable. Keep at least 5 commands visible.")
 
         const CmdSettings = containerEl.createDiv({ cls: "heading-config" })
 
-        const CmdsOn = containerEl.createDiv({ attr: { id: 'cmds-on' }, cls: "heading-config-on" });
-        const CmdsOff = containerEl.createDiv({ attr: { id: 'cmds-off' }, cls: "heading-config-off" });
-
-        CmdSettings.appendChild(CmdsOn)
-        CmdSettings.appendChild(CmdsOff)
-
-        let cmdsSorting = [...(this.plugin.settings?.cmdsSorting || [])]
-        const enabledSet = new Set(cmdsSorting)
-        let disabledCmdsSorting = [
-            ...(this.plugin.settings?.disabledCmdsSorting || []).filter(
-                (cmd) => HEADING_MENU.includes(cmd) && !enabledSet.has(cmd)
-            ),
-        ]
-        for (const cmd of HEADING_MENU) {
-            if (!enabledSet.has(cmd) && !disabledCmdsSorting.includes(cmd)) {
-                disabledCmdsSorting.push(cmd)
-            }
-        }
-        const cmdsAll = [...cmdsSorting, ...disabledCmdsSorting]
-        const toggleMap = new Map<CMD_TYPE, Setting>()
+        const enabledSet = new Set(this.plugin.settings.cmdsSorting)
+        const cmdsAll = this.plugin.settings.commandOrder
+        const toggleMap = new Map<CMD_TYPE, ToggleComponent>()
 
         const getCmdsFromContainer = (container: HTMLElement): CMD_TYPE[] => {
             return Array.from(container.children)
@@ -107,19 +92,20 @@ export class ExampleSettingTab extends PluginSettingTab {
         }
 
         const updateToggleDisabledStates = () => {
-            for (const [cmd, setting] of toggleMap.entries()) {
-                setting.setDisabled(cmdsSorting.length <= 5 && cmdsSorting.includes(cmd))
+            for (const [cmd, toggle] of toggleMap.entries()) {
+                toggle.setDisabled(enabledSet.size <= 5 && enabledSet.has(cmd))
             }
         }
 
         const updateAndSaveOrder = async () => {
-            cmdsSorting = getCmdsFromContainer(CmdsOn)
-            disabledCmdsSorting = getCmdsFromContainer(CmdsOff)
-            this.plugin.settings.cmdsSorting = [...cmdsSorting]
-            this.plugin.settings.disabledCmdsSorting = [...disabledCmdsSorting]
+            const order = normalizeCommandOrder({
+                commandOrder: getCmdsFromContainer(CmdSettings),
+                cmdsSorting: [...enabledSet],
+            })
+            Object.assign(this.plugin.settings, order)
             if (this.plugin.commands) {
-                this.plugin.commands.defaultCmds = [...cmdsSorting]
-                this.plugin.commands.allCmds = [...cmdsSorting, ...disabledCmdsSorting]
+                this.plugin.commands.defaultCmds = [...order.cmdsSorting]
+                this.plugin.commands.allCmds = [...order.commandOrder]
             }
             updateToggleDisabledStates()
             this.hasChanged = true
@@ -128,40 +114,40 @@ export class ExampleSettingTab extends PluginSettingTab {
 
         for (let i = 0; i < cmdsAll.length; i++) {
             const cmd = cmdsAll[i]
-            let HeaderItem: HTMLDivElement;
-            const isChecked = cmdsSorting.includes(cmd)
-            if (isChecked) {
-                HeaderItem = CmdsOn.createDiv({ cls: 'heading-item', attr: { 'data-cmd': cmd } })
-            } else {
-                HeaderItem = CmdsOff.createDiv({ cls: 'heading-item', attr: { 'data-cmd': cmd } })
-            }
+            const isChecked = enabledSet.has(cmd)
+            const HeaderItem = CmdSettings.createDiv({
+                cls: isChecked ? 'heading-item' : 'heading-item is-hidden-command',
+                attr: { 'data-cmd': cmd },
+            })
             const IconDiv = HeaderItem.createDiv({ cls: 'heading-item-icon' })
             setIcon(IconDiv, CMD_CONFIG[cmd].icon);
-            const settingItem = new Setting(HeaderItem)
+            new Setting(HeaderItem)
                 .setName(CMD_CONFIG[cmd].title)
-                .addToggle((component) =>
+                .addToggle((component) => {
+                    toggleMap.set(cmd, component)
                     component.setValue(isChecked)
-                        .onChange(async () => {
-                            if (cmdsSorting.includes(cmd)) {
-                                CmdsOn.removeChild(HeaderItem)
-                                CmdsOff.insertBefore(HeaderItem, CmdsOff.firstElementChild)
+                        .setTooltip("Show in the initial / menu")
+                        .onChange(async (visible) => {
+                            if (!visible && enabledSet.has(cmd) && enabledSet.size <= 5) {
+                                component.setValue(true)
+                                return
+                            }
+                            if (visible) {
+                                enabledSet.add(cmd)
+                                HeaderItem.removeClass('is-hidden-command')
                             } else {
-                                CmdsOff.removeChild(HeaderItem)
-                                CmdsOn.appendChild(HeaderItem)
+                                enabledSet.delete(cmd)
+                                HeaderItem.addClass('is-hidden-command')
                             }
                             await updateAndSaveOrder()
                         })
-                ).setDisabled(cmdsSorting.length <= 5 && cmdsSorting.includes(cmd))
-            toggleMap.set(cmd, settingItem)
+                })
         }
+        updateToggleDisabledStates()
 
-        new Sortable(CmdsOn, {
-            onEnd: async () => {
-                await updateAndSaveOrder()
-            },
-        })
-
-        new Sortable(CmdsOff, {
+        new Sortable(CmdSettings, {
+            filter: '.setting-item-control',
+            preventOnFilter: false,
             onEnd: async () => {
                 await updateAndSaveOrder()
             },

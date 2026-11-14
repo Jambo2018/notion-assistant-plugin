@@ -1,12 +1,13 @@
 import { MarkdownView, Plugin, Platform } from "obsidian";
 import { CommandMenu } from "src/components/command-menu";
+import { normalizeCommandOrder } from "src/command-order";
 import {
 	CMD_CONFIG,
 	CODE_LAN,
 	CONTENT_MAP,
-	HEADING_MENU,
 	ICON_MAP,
 	TEXT_MAP,
+	resolveCommandId,
 } from "src/constants";
 import { InsertLinkModal } from "src/components/link-input-modal";
 import { SelectionBtns } from "src/components/selection-menu";
@@ -22,17 +23,12 @@ export default class TypingAsstPlugin extends Plugin {
 	settings: ExamplePluginSettings;
 
 	async loadSettings() {
-		const initialMenu = HEADING_MENU.filter(item => item === 'insert-note-callout' || !item.includes("callout"));
-		const initialDisabledMenu = HEADING_MENU.filter(item => !initialMenu.includes(item));
-		this.settings = Object.assign({}, { nonEmptyLineDisabled: false, showPlaceholder: true, cmdsSorting: initialMenu, disabledCmdsSorting: initialDisabledMenu, disableSelectionMenu: isMobile }, await this.loadData());
-		const enabledSet = new Set(this.settings.cmdsSorting);
-		const existingDisabled = (this.settings.disabledCmdsSorting || []).filter(
-			(cmd) => HEADING_MENU.includes(cmd) && !enabledSet.has(cmd)
-		);
-		const remainingDisabled = HEADING_MENU.filter(
-			(cmd) => !enabledSet.has(cmd) && !existingDisabled.includes(cmd)
-		);
-		this.settings.disabledCmdsSorting = [...existingDisabled, ...remainingDisabled];
+		const savedSettings = await this.loadData() ?? {};
+		this.settings = Object.assign({}, {
+			nonEmptyLineDisabled: false,
+			showPlaceholder: true,
+			disableSelectionMenu: isMobile,
+		}, savedSettings, normalizeCommandOrder(savedSettings));
 		if (process.env.NODE_ENV === 'development') {
 			console.log('commands======>', (this as any).app.commands)
 		}
@@ -66,7 +62,9 @@ export default class TypingAsstPlugin extends Plugin {
 				const lineContent = editor.getLine(cursor.line);
 				editor.setLine(cursor.line, lineContent.replace(/^.*?\s/, ""));
 			}
-			(this.app as any).commands.executeCommandById((CMD_CONFIG as any)[content].cmd);
+			(this.app as any).commands.executeCommandById(
+				resolveCommandId((CMD_CONFIG as any)[content].cmd, this.manifest.id)
+			);
 			if (content === "set-link") {
 				view.editor.focus();
 			}
@@ -78,7 +76,7 @@ export default class TypingAsstPlugin extends Plugin {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
 				(this.app as any).commands.executeCommandById(
-					CMD_CONFIG[content].cmd
+					resolveCommandId(CMD_CONFIG[content].cmd, this.manifest.id)
 				);
 				view.editor.focus();
 
@@ -242,10 +240,7 @@ export default class TypingAsstPlugin extends Plugin {
 				scrollArea,
 				onMenu: onMenuClick,
 				defaultCmds: this.settings.cmdsSorting,
-				allCmds: [
-					...this.settings.cmdsSorting,
-					...this.settings.disabledCmdsSorting,
-				],
+				allCmds: this.settings.commandOrder,
 			});
 
 			this.btns?.remove();

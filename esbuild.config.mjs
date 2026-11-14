@@ -1,6 +1,8 @@
 import esbuild from "esbuild";
 import process from "process";
 import builtins from "builtin-modules";
+import { promises as fs } from "fs";
+import path from "path";
 
 const banner =
 `/*
@@ -10,6 +12,36 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 const prod = (process.argv[2] === "production");
+const devId = "notion-assistant-plugin";
+const devDir = path.join("dist", devId);
+const entryPoint = path.resolve("main.ts");
+
+const developmentPlugin = {
+	name: "development-plugin",
+	setup(build) {
+		// 清单和样式也参与监听，修改后同步到开发插件目录。
+		build.onLoad({ filter: /[\\/]main\.ts$/ }, async (args) => {
+			if (args.path !== entryPoint) return;
+			return {
+				contents: await fs.readFile(args.path, "utf8"),
+				loader: "ts",
+				watchFiles: [path.resolve("manifest.json"), path.resolve("styles.css")],
+			};
+		});
+		build.onEnd(async (result) => {
+			if (result.errors.length) return;
+			const manifest = JSON.parse(await fs.readFile("manifest.json", "utf8"));
+			manifest.id = devId;
+			manifest.name += " (Dev)";
+			await fs.mkdir(devDir, { recursive: true });
+			await Promise.all([
+				fs.writeFile(path.join(devDir, "manifest.json"), JSON.stringify(manifest, null, "\t") + "\n"),
+				fs.copyFile("styles.css", path.join(devDir, "styles.css")),
+			]);
+			console.log(`[dev] ${manifest.name} (${devId}) -> ${path.resolve(devDir)}`);
+		});
+	},
+};
 
 const context = await esbuild.context({
 	banner: {
@@ -37,15 +69,19 @@ const context = await esbuild.context({
 	logLevel: "info",
 	sourcemap: prod ? false : "inline",
 	treeShaking: true,
-	outfile: "main.js",
+	outfile: prod ? "main.js" : path.join(devDir, "main.js"),
+	plugins: prod ? [] : [developmentPlugin],
 	define: {
 		'process.env.NODE_ENV': prod ? '"production"' : '"development"'
 	},
 });
 
 if (prod) {
-	await context.rebuild();
-	process.exit(0);
+	try {
+		await context.rebuild();
+	} finally {
+		await context.dispose();
+	}
 } else {
 	await context.watch();
 }

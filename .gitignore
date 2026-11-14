@@ -22,3 +22,10 @@ data.json
 .DS_Store
 
 yarn.lock
+
+# Development plugin output
+/dist/
+
+# Local working notes
+/docs/memory/
+/docs/pitfalls/

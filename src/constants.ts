@@ -438,6 +438,14 @@ export const CMD_CONFIG = {
 	},
 } as const;
 
+// 配置中的插件命令使用正式版前缀；执行时替换为当前清单的 id。
+export function resolveCommandId(commandId: string, pluginId: string): string {
+	const prefix = "typing-assistant:";
+	return commandId.startsWith(prefix)
+		? `${pluginId}:${commandId.slice(prefix.length)}`
+		: commandId;
+}
+
 const config2Arr = (conf: any) => {
 	const arr = []
 	for (const key in conf) {

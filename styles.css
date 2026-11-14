@@ -250,20 +250,11 @@
 	border: 1px solid var(--background-modifier-border);
 	border-radius: 8px;
 }
-.heading-config-on,
-.heading-config-off {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-}
-.heading-config-on > div,
-.heading-config-off > div {
+.heading-config > .heading-item {
 	cursor: all-scroll;
-}
-.heading-config-on > .heading-item {
 	background-color: var(--background-primary);
 }
-.heading-config-off > .heading-item {
+.heading-config > .heading-item.is-hidden-command {
 	background-color: var(--background-secondary);
 }
 
