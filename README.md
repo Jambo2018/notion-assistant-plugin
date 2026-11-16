@@ -26,6 +26,7 @@ In Obsidian, open **Settings → Community plugins → Browse**, search for **Ty
 - **Searchable commands and custom order.** Choose what appears when you first type `/`. Hidden commands remain searchable. For example, with default settings, typing `/todo` can find **Todo Callout** even though it isn't in the initial menu. It's separate from **To-do List**, which inserts a checkbox.
 - **Floating formatting toolbar.** Select text to apply bold, italic, strikethrough, highlight, inline code, or a link. The toolbar also lets you change the current line to a heading, checklist item, or list item.
 - **Bookmark cards.** Search for **Link BookMark** and enter a URL to insert a preview card in your note.
+  Creating a bookmark card requests the URL you enter to retrieve its title and preview details. Displaying the card may load its favicon and cover image from their hosts.
 
 ## Settings worth knowing
 
